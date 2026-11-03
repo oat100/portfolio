@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAEK KWIRI — Superfood Oat Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=Pinyon+Script&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* =========================================================
+   TONE & MANNER — 크림색 종이 + 그레인, 채도 낮은 자연색(잎·머스터드·토마토·자두·흙), 그림자 없는 평면 일러스트
+   ========================================================= */
+:root{
+  --bg:#F3EEE2; --paper:#FAF7EF; --soft:#EAE3D2; --line:#DDD5C1;
+  --ink:#34382C; --ink-2:#6C6A5A; --ink-3:#A7A18D; --on-ink:#FAF7EF;
+  --leaf:#5C7A3A; --sage:#9DAF78; --mustard:#DDB24A; --tomato:#D4563F; --plum:#6B3445; --earth:#7B6A4E;
+  /* 서체: 굵은 그로테스크(큰 영문 제목) · 스크립트(로고) · 모노(작은 라벨) · 굵은 한글 디스플레이(히어로) · 본문 프리텐다드 */
+  --en:"Bricolage Grotesque","Pretendard",sans-serif;
+  --script:"Pinyon Script",cursive;
+  --mono:"IBM Plex Mono","Pretendard",monospace;
+  --ko-display:"Black Han Sans","Pretendard",sans-serif;
+  --sans:"Pretendard","Pretendard Variable",-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --gnb:72px;
+  --ease:cubic-bezier(.22,.8,.24,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+/* scrollbar-gutter: 팝업이 열려 스크롤이 잠겨도 스크롤바 자리를 비워둬서 화면이 옆으로 밀리지 않게 */
+html{scroll-behavior:smooth;scroll-padding-top:var(--gnb);scrollbar-gutter:stable}
+body{font-family:var(--sans);font-weight:400;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;word-break:keep-all}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+/* 콘텐츠 폭 = GNB 폭 (BI 왼쪽 끝 ~ 메뉴 오른쪽 끝으로 좌우 마진 통일) */
+.wrap{width:min(1280px,calc(100% - 96px));margin:0 auto;position:relative}
+/* 종이 그레인: 화면 전체에 아주 옅은 노이즈를 곱하기로 깔아 레퍼런스의 인쇄 질감처럼 */
+body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;opacity:.32;mix-blend-mode:multiply;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .4  0 0 0 0 .3  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* 평면 일러스트 톤: 그림자 없음 */
+.obj{filter:none}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* type */
+.cap{font-family:var(--en);font-weight:700;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+.desc{font-size:13px;font-weight:300;line-height:1.55;color:var(--ink-2)}
+.price{font-family:var(--mono);font-size:12.5px;letter-spacing:0;color:var(--ink);margin-top:2px}
+/* 섹션 큰 제목: 그로테스크 대문자, 진한 올리브 (레퍼런스 limoncello 라벨처럼 차분하게) */
+.display{font-family:var(--en);font-weight:700;font-size:clamp(64px,8.4vw,118px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--ink)}
+.display small{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:-.01em;margin-left:16px;vertical-align:baseline;color:var(--ink);text-transform:none}
+.display small b{font-weight:400}
+.copy-link{border-bottom:1px solid var(--ink-3);cursor:pointer;transition:border-color .2s}
+.copy-link:hover{border-color:var(--ink)}
+.txt-btn{font-family:var(--en);font-size:13px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:3px;transition:opacity .2s}
+.txt-btn:hover{opacity:.5}
+.line-btn{white-space:nowrap;display:inline-flex;align-items:center;height:42px;padding:0 22px;border:1px solid var(--ink);font-family:var(--en);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;transition:background .25s,color .25s}
+.line-btn:hover,.line-btn.dark{background:var(--ink);color:var(--on-ink)}
+.line-btn.dark:hover{background:var(--paper);color:var(--ink)}
+
+/* ---------- GNB ---------- */
+.gnb{position:fixed;inset:0 0 auto 0;height:var(--gnb);z-index:50;background:rgba(243,238,226,.92);backdrop-filter:blur(8px);transition:box-shadow .3s}
+.gnb.solid{box-shadow:0 1px 0 var(--line)}
+.gnb .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
+.bi{font-family:var(--script);font-size:30px;line-height:1;color:var(--ink)}
+.menu{display:flex;gap:30px}
+.menu a{display:flex;flex-direction:column;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);transition:color .2s}
+.menu a small{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-3);margin-top:2px}
+.menu a:hover,.menu a.on{color:var(--ink)}
+.menu a.on b{border-bottom:2px solid var(--leaf)}
+.menu b{font-weight:400}
+
+/* ---------- 1.1 HERO (화면설계서: 중앙 정렬 카피 → 버튼 → 대표 이미지, 우측 연락처) ---------- */
+.hero{padding:calc(var(--gnb) + 36px) 0 120px;text-align:center}
+.hero .wrap{position:relative}
+/* 라벨 상단 정보줄 (레퍼런스 limoncello·CANTINA의 모노 정보줄) */
+.hero-info{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink-2);padding-bottom:14px;margin-bottom:52px;border-bottom:1px solid var(--line)}
+.hero-copy .sub{display:block;font-size:clamp(26px,3vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.3;color:var(--ink)}
+.hero-copy .main{display:block;font-family:var(--ko-display);font-size:clamp(46px,6.6vw,88px);font-weight:400;letter-spacing:-.01em;line-height:1.15;color:var(--ink);margin-top:8px}
+.hero-btns{display:flex;justify-content:center;gap:10px;margin-top:34px}
+.hero-btns .btn{min-width:186px}
+/* 대표 이미지: 귀리 다발 일러스트 (세로로 긴 그림이라 높이 기준으로 맞춤) */
+.hero-graphic{display:flex;justify-content:center;height:clamp(300px,44vh,440px);margin:44px auto 0}
+.hero-graphic img{height:100%;width:auto}
+.hero-contact{position:absolute;right:0;bottom:12%;display:flex;flex-direction:column;gap:22px;text-align:left}
+.hero-contact li{list-style:none;display:flex;align-items:center;gap:14px}
+.hero-contact .ic{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center}
+.hero-contact small{display:block;font-size:12px;color:var(--ink-3);margin-bottom:3px}
+.hero-contact .copy-link{font-size:14.5px;color:var(--ink);border-bottom-color:var(--ink)}
+
+/* ---------- SECTION ---------- */
+.sec{padding:150px 0}
+/* 반자동 스크롤: 메인 섹션은 최소 한 화면(GNB 아래) 높이 */
+#main-view>section{min-height:calc(100dvh - var(--gnb))}
+/* 한 화면에 섹션 전체(제목~하단 버튼)가 들어오도록: 여백을 화면 높이에 맞춰 줄이고 세로 가운데 정렬 */
+.sec.fit{padding:clamp(32px,5vh,64px) 0;display:flex;flex-direction:column;justify-content:center}
+.sec.fit .sec-head{margin-bottom:clamp(28px,4.5vh,48px)}
+.sec.fit .more{margin-top:clamp(28px,4.5vh,44px)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:96px}
+.sec-head .lead{font-size:15px;font-weight:300;line-height:1.75;color:var(--ink-2);margin-top:26px}
+.sec-head .lead b{font-weight:500;color:var(--ink)}
+.sec-head .obj{width:240px;flex:none}
+
+/* ---------- project items ---------- */
+.items{display:grid;grid-template-columns:repeat(3,1fr);gap:70px 28px}
+.item{display:flex;flex-direction:column;cursor:pointer;width:100%}
+.item .th{aspect-ratio:16/9;background:var(--soft);margin-bottom:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:background .3s}
+/* 표지는 대부분 16:9 → 박스도 16:9, 세로형(KHIDI)·4:3(오름)은 잘리지 않게 contain */
+.item .th img{width:100%;height:100%;object-fit:contain}
+.item .th span{font-family:var(--en);font-weight:700;font-size:26px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center;padding:0 20px;transition:color .3s}
+.item:hover .th{background:var(--line)}
+.item:hover .th span{color:var(--ink-2)}
+.item .cap{font-size:15.5px;margin-bottom:8px}
+.item .desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
+.item .tags{font-size:12px;font-weight:300;color:var(--ink-3);margin-top:6px}
+.more{margin-top:80px;text-align:center}
+
+/* ---------- granola ---------- */
+/* 스푼 칸 너비를 화면 높이에 맞춰 줄여 섹션이 한 화면에 들어오게 */
+.granola-grid{display:grid;grid-template-columns:min(48%,clamp(320px,50vh,480px)) 1fr;gap:70px;align-items:start}
+.spoon{position:relative;aspect-ratio:1/.98;width:100%;max-width:480px;margin:0 auto}
+.spoon img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.tp{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:flex-start;background:rgba(250,247,239,.88);padding:4px 8px;transition:opacity .2s}
+.tp .cap{font-size:13.5px}
+.tp .desc{font-size:12px}
+.tp:hover .cap,.tp.on .cap{text-decoration:underline;text-underline-offset:5px}
+.tp.on .cap{font-weight:500}
+.hint{font-size:12.5px;font-weight:300;color:var(--ink-3);margin-top:14px}
+.panel{border-left:1px solid var(--line);padding:6px 0 6px 50px;height:clamp(340px,52vh,500px);display:flex;flex-direction:column;position:relative}
+.panel .empty{margin:auto 0}
+.panel .empty .cap{font-size:22px;font-weight:300;letter-spacing:.1em}
+.panel .empty p{margin-top:14px}
+.panel .close{position:absolute;top:0;right:0;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2)}
+.panel .close:hover{color:var(--ink)}
+.panel .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--leaf)}
+.panel h4{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:10px 0 30px}
+.panel .scroller{overflow-y:auto;padding-right:14px;margin-right:-14px}
+.scroller::-webkit-scrollbar{width:3px}.scroller::-webkit-scrollbar-thumb{background:var(--line)}
+.hist{display:grid;grid-template-columns:130px 1fr;gap:4px 18px;padding:15px 0;border-top:1px solid var(--line)}
+.hist:first-child{border-top:0;padding-top:0}
+.hist dt{font-family:var(--mono);font-size:12.5px;letter-spacing:0;color:var(--ink-3)}
+.hist dd{font-size:15px;font-weight:500;line-height:1.6}
+.hist dd small{display:block;font-size:13px;font-weight:300;color:var(--ink-2);margin-top:3px}
+.hist.kv dt{font-family:var(--sans)}
+.fade{animation:fade .5s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- bread ---------- */
+.bread-wrap{position:relative}
+.bread-wrap .obj.a{position:absolute;right:-30px;top:-70px;width:200px;transform:rotate(14deg)}
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:50px}
+.way .no{font-family:var(--en);font-weight:800;font-size:46px;color:var(--leaf);line-height:1}
+.way .cap{margin:22px 0 4px;font-size:14px}
+.way h3{font-size:19px;font-weight:600;line-height:1.5;letter-spacing:-.02em;margin-bottom:14px}
+.way p{font-size:14.5px;font-weight:300;line-height:1.9;color:var(--ink-2)}
+
+/* ---------- milk ---------- */
+/* 한 화면에 보이도록: 3개 그룹(2·2·3잔)을 한 줄로, 섹션 여백 축소 */
+#milk.sec{padding:90px 0}
+#milk .sec-head{margin-bottom:52px}
+.tools{display:grid;grid-template-columns:2fr 2fr 3fr;gap:36px}
+.tool-group h3{font-size:13px;font-weight:500;color:var(--ink-2);text-align:center;padding-bottom:12px;margin-bottom:26px;border-bottom:1px solid var(--line)}
+.tool-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px}
+.tool{display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;width:100%}
+/* 일러스트 우유잔: 빈 잔 위에 가득 찬 잔을 겹치고, 마시면 가득 찬 잔이 위에서부터 잘려 내려가 빈 잔이 드러남 */
+.tool .glass{position:relative;display:block;width:min(100%,104px);aspect-ratio:358/618;margin-bottom:16px;transition:transform .4s var(--ease)}
+.tool:hover .glass{transform:translateY(-5px)}
+.tool .glass img{position:absolute;inset:0;width:100%;height:100%}
+.tool .glass .full{clip-path:inset(0 0 0 0);transition:clip-path .9s var(--ease)}
+.tool.empty .glass .full{clip-path:inset(100% 0 0 0)}
+.tool .glass .ab{position:absolute;inset:20% 9% 16%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;font-weight:500;line-height:1.55;color:var(--ink);opacity:0;transition:opacity .4s}
+.tool.empty .glass .ab{opacity:1;transition-delay:.45s}
+.tool .cap{font-size:14px;margin-bottom:4px}
+.tool .price{color:var(--ink-3);font-size:11.5px;margin-top:0}
+.milk-cta{margin-top:48px;text-align:center}
+
+/* ---------- cookie ---------- */
+.cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;max-width:640px}
+.ck{cursor:pointer;display:block;width:100%}
+/* 쿠키: 누르면 한 입 베어 문 쿠키로 바뀜 */
+.ck .bite{position:relative;display:block;width:150px;aspect-ratio:1;margin-bottom:28px;transition:transform .6s var(--ease)}
+.ck .bite img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .15s}
+.ck .bite .after,.ck.bitten .bite .before{opacity:0}
+.ck.bitten .bite .after{opacity:1}
+.ck:hover .bite{transform:translateY(-8px)}
+.ck.bitten .bite{animation:nibble .25s ease-out}
+@keyframes nibble{0%{scale:1}45%{scale:.92;rotate:-5deg}100%{scale:1;rotate:0deg}}
+@media (prefers-reduced-motion:reduce){.ck.bitten .bite{animation:none}}
+.ck .cap{margin-bottom:8px}
+.ck .price{font-size:15px;text-transform:none;letter-spacing:.02em}
+
+/* ---------- footer ---------- */
+footer{padding:100px 0 60px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+footer .display{font-family:var(--script);font-weight:400;font-size:64px;line-height:1.1;letter-spacing:0;text-transform:none;color:var(--ink)}
+footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-align:right}
+
+/* =========== 밥 페이지 · 상세 팝업 : 화면설계서 레이아웃 =========== */
+/* 버튼 (설계서: 진한 사각 버튼 + ↗/→) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:46px;padding:0 24px;background:var(--ink);color:var(--on-ink);font-size:14px;font-weight:500;letter-spacing:.01em;white-space:nowrap;border:1px solid var(--ink);transition:background .25s,color .25s}
+.btn:hover{background:var(--paper);color:var(--ink)}
+.btn.line{background:var(--paper);color:var(--ink)}
+.btn.line:hover{background:var(--ink);color:var(--on-ink)}
+
+/* ---------- 프로젝트 카드 (썸네일 / 문서유형 태그 / 프로젝트명 / 해시태그) ---------- */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.card{text-align:left;border:1px solid var(--line);background:var(--paper);display:flex;flex-direction:column;cursor:pointer;width:100%;transition:transform .45s var(--ease),box-shadow .45s,border-color .3s}
+.card:hover{transform:translateY(-6px);box-shadow:0 30px 50px -36px rgba(52,56,44,.35);border-color:var(--ink-3)}
+.thumb{aspect-ratio:16/9;background:var(--soft);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:contain}
+.thumb span{font-family:var(--en);font-weight:700;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center;padding:0 16px}
+.card .body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:12px;flex:1}
+.tag{align-self:flex-start;font-size:12px;font-weight:500;padding:4px 12px;border:1px solid var(--leaf);color:var(--leaf);border-radius:999px}
+.card h3{font-size:16.5px;font-weight:700;line-height:1.55;letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
+.card .hash{font-size:12.5px;font-weight:300;color:var(--ink-2)}
+.card .period{font-family:var(--mono);font-size:12px;letter-spacing:0;color:var(--ink-3);margin-top:auto}
+.more{display:flex;justify-content:center;margin-top:60px}
+
+/* ---------- 밥 페이지 섹션 타이틀 (화면설계서: 가운데 정렬) ---------- */
+#bap-view .sec-head{display:block;text-align:center;margin-bottom:70px}
+#bap-view .sec-head .label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+#bap-view .sec-head .label b{font-family:var(--sans);font-weight:400;letter-spacing:0;color:var(--ink-2);margin-left:8px}
+#bap-view .sec-head h2{font-size:52px;font-weight:300;letter-spacing:-.02em;margin:16px 0 22px}
+#bap-view .sec-head p{font-size:15.5px;font-weight:300;line-height:1.8;color:var(--ink-2)}
+/* ---------- 1.3 밥 ---------- */
+.view{display:none}.view.show{display:block}
+#bap-view{padding-top:var(--gnb)}
+#bap-view .sec{padding-top:70px}
+.back{position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center;transition:background .2s,color .2s}
+.back:hover{background:var(--ink);color:var(--on-ink)}
+.bap-box{display:grid;grid-template-columns:270px 1fr;border:1px solid var(--line)}
+.cats{border-right:1px solid var(--line);padding:24px 0}
+.cats-in{position:sticky;top:calc(var(--gnb) + 24px)}
+.cat{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:14px;width:100%;text-align:left;padding:16px 20px;transition:background .25s}
+.cat .ci{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;overflow:hidden}
+.cat .ci img{width:34px}
+.cat b{display:block;font-size:15px;font-weight:600}
+.cat small{font-size:12px;font-weight:300;color:var(--ink-2)}
+.cat .cnt{font-family:var(--mono);font-size:12.5px;color:var(--ink-3)}
+.cat:hover{background:var(--soft)}
+.cat.on{background:var(--ink);color:var(--on-ink)}
+.cat.on small,.cat.on .cnt{color:rgba(250,247,239,.65)}
+.bap-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;padding:34px}
+.bap-cards .card{animation:fade .5s var(--ease) both}
+
+/* ---------- 1.3 프로젝트 상세 팝업 ---------- */
+.dim{position:fixed;inset:0;background:rgba(40,43,33,.45);z-index:90;opacity:0;pointer-events:none;transition:opacity .35s}
+.dim.open{opacity:1;pointer-events:auto}
+.modal{position:fixed;left:50%;top:50%;width:min(980px,calc(100% - 64px));height:min(90vh,980px);transform:translate(-50%,-48%);opacity:0;pointer-events:none;z-index:100;background:var(--paper);transition:all .45s var(--ease)}
+.modal.open{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
+.modal .scroller{height:100%;overflow-y:auto;padding:56px 64px 90px}
+.modal .scroller::-webkit-scrollbar{width:6px}
+.m-close{position:absolute;top:24px;right:28px;z-index:3;width:42px;height:42px;border-radius:50%;border:1px solid var(--ink);background:var(--paper);display:grid;place-items:center;transition:transform .3s}
+.m-close:hover{transform:rotate(90deg)}
+.m-top{position:absolute;right:28px;bottom:24px;z-index:3;width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;opacity:0;transition:opacity .3s}
+.m-top.show{opacity:1}
+.m-head{margin-bottom:28px}
+.m-head .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--leaf)}
+.m-head h2{font-size:22px;font-weight:700;margin-top:6px}
+.m-row1{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.m-cover{aspect-ratio:16/9;background:var(--soft);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line)}
+.m-cover img{width:100%;height:100%;object-fit:contain}
+.m-cover span{font-family:var(--en);font-weight:700;font-size:30px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center}
+.m-intro h5{font-size:16px;font-weight:700;margin-bottom:12px}
+.m-intro p{font-size:14.5px;font-weight:300;line-height:1.9;color:var(--ink-2)}
+.m-btns{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
+.m-btns .btn{height:42px;font-size:13px;padding:0 20px}
+.m-row2{margin-top:30px;max-width:520px}
+.m-title{font-size:20px;font-weight:700;line-height:1.5;letter-spacing:-.02em;margin-bottom:20px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.m-info{display:grid;grid-template-columns:90px 1fr;row-gap:12px}
+.m-info dt{font-size:13px;color:var(--ink-3)}
+.m-info dd{font-size:13.5px;line-height:1.65}
+.m-info dd.none{color:var(--ink-3)}
+.m-info dd.award{font-weight:600;color:var(--tomato)}
+.m-block{margin-top:60px;padding-top:44px;border-top:1px solid var(--line)}
+.m-why-h{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.m-why-h h3{font-size:28px;font-weight:700;letter-spacing:-.03em}
+.m-why-h small{font-size:13px;color:var(--ink-3)}
+.m-text p{font-size:15px;font-weight:300;line-height:1.95}
+.m-text p+p{margin-top:14px}
+.m-imgs{display:grid;gap:14px;margin-top:30px}
+.m-imgs.c2{grid-template-columns:1fr 1fr}.m-imgs.c3{grid-template-columns:repeat(3,1fr)}
+.ph-img{background:var(--soft);aspect-ratio:16/10;position:relative;overflow:hidden}
+.m-imgs.a4 .ph-img{aspect-ratio:1/1.414}
+.ph-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph-img span{position:absolute;left:14px;bottom:12px;font-size:11.5px;color:var(--ink-3)}
+.m-imgs.c1{grid-template-columns:1fr}
+.ph-img.has,.m-imgs.a4 .ph-img.has{aspect-ratio:auto;background:var(--paper);border:1px solid var(--line)}
+.ph-img.has img{position:static;height:auto}
+.m-others{margin-top:60px;padding-top:40px;border-top:1px solid var(--line)}
+.m-others h4{font-size:17px;font-weight:700;margin-bottom:12px}
+.others li{list-style:none}
+.others a{display:inline-block;padding:6px 0;font-size:14.5px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--ink-3)}
+.others a:hover{text-decoration-color:var(--ink)}
+.m-back{display:flex;justify-content:center;margin-top:50px}
+
+.toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);background:var(--ink);color:var(--on-ink);padding:12px 22px;font-size:13px;opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:200}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* Top btn (진한 원 + ^) */
+.page-top{position:fixed;right:30px;bottom:30px;width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;z-index:40;opacity:0;pointer-events:none;transition:opacity .3s}
+.page-top.show{opacity:1;pointer-events:auto}
+
+@media (max-width:1000px){
+  .wrap{width:calc(100% - 48px)}
+  .menu small{display:none}.menu{gap:16px}
+  .sec-head{flex-direction:column;align-items:flex-start}
+  .hero-contact{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:18px 32px;margin-top:44px}
+  .items{grid-template-columns:1fr 1fr}
+  .granola-grid,.m-top-grid{grid-template-columns:1fr}
+  .panel{border-left:0;border-top:1px solid var(--line);padding:40px 0 0}
+  .ways{grid-template-columns:1fr}
+  .tools{grid-template-columns:1fr 1fr;gap:40px 28px}
+  .tool-group:last-child{grid-column:1/-1}
+}
+@media (max-width:640px){
+  .menu{display:none}
+  .items,.m-imgs.c2,.m-imgs.c3,.tools{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column;align-items:center}
+  .hero-info span:nth-child(2){display:none}
+  .hero-contact{flex-direction:column;align-items:center}
+  .modal .scroller{padding:60px 24px 80px}
+}
+</style>
+</head>
+<body>
+
+<header class="gnb" id="gnb">
+  <div class="wrap">
+    <a href="#top" class="bi" data-go="top">Baek Kwiri</a>
+    <nav class="menu" aria-label="주요 메뉴">
+      <a href="#nurungji" data-go="nurungji"><b>NURUNGJI</b><small>대표 프로젝트</small></a>
+      <a href="#bap" data-go="bap"><b>BAP</b><small>전체 프로젝트</small></a>
+      <a href="#granola" data-go="granola"><b>GRANOLA</b><small>이력</small></a>
+      <a href="#bread" data-go="bread"><b>BREAD</b><small>About me</small></a>
+      <a href="#milk" data-go="milk"><b>MILK</b><small>툴 역량</small></a>
+      <a href="#cookie" data-go="cookie"><b>COOKIE</b><small>연락처</small></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-view" class="view show">
+
+  <!-- 1.1 HERO (화면설계서 v0.4) -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div class="hero-info" aria-hidden="true"><span>SUPERFOOD OAT PLANNER</span><span>PORTFOLIO 2026</span><span>SINCE 2025</span></div>
+      <!-- 1. 메인 카피 -->
+      <h1 class="hero-copy"><span class="sub">슈퍼푸드 귀리처럼</span><span class="main">알찬 기획자 백귀리</span></h1>
+      <!-- 2·3. 이력서 / 자기소개서 바로 보기 -->
+      <div class="hero-btns">
+        <a class="btn" href="#" data-file="resume">이력서 바로 보기 <span aria-hidden="true">↗</span></a>
+        <a class="btn" href="#" data-file="coverLetter">자기소개서 바로 보기 <span aria-hidden="true">↗</span></a>
+      </div>
+      <!-- 4. 메인 그래픽 (클릭 기능 없음) -->
+      <div class="hero-graphic"><img src="img/new/hero-oat.png" alt="리본으로 묶은 귀리 다발과 귀리 알갱이 일러스트"></div>
+      <!-- 5·6. 이메일 / 연락처 (Text Link, 클릭 시 복사) -->
+      <ul class="hero-contact">
+        <li><span class="ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg></span>
+          <span><small>이메일</small><span class="copy-link" role="button" tabindex="0" data-copy="oatrice100@gmail.com" data-msg="이메일 주소가 복사되었어요">oatrice100@gmail.com</span></span></li>
+        <li><span class="ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+          <span><small>연락처</small><span class="copy-link" role="button" tabindex="0" data-copy="010-5501-3114" data-msg="전화번호가 복사되었어요">010-5501-3114</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 1.2 누룽지 -->
+  <section class="sec fit" id="nurungji">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <h2 class="display">Nurungji<small>대표 프로젝트</small></h2>
+          <p class="lead"><b>가장 맛있는 부분을 골랐습니다.</b><br>저의 역량이 진하게 담긴 대표 프로젝트입니다.</p>
+        </div>
+        <img class="obj" src="img/new/nurungji.png" alt="누룽지" style="width:280px">
+      </div>
+      <div class="items" id="featuredCards"></div>
+      <div class="more reveal"><a href="#bap" class="txt-btn" data-go="bap" data-cat="all">밥 · 전체 프로젝트 보기 →</a></div>
+    </div>
+  </section>
+
+  <!-- 1.4 그래놀라 -->
+  <section class="sec fit" id="granola">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <h2 class="display">Granola<small>이력</small></h2>
+          <p class="lead"><b>서로 다른 경험이 모여 지금의 저를 만들었습니다.</b><br>학력부터 활동까지, 쌓아온 이력을 소개합니다.</p>
+        </div>
+      </div>
+      <div class="granola-grid">
+        <div class="reveal">
+          <div class="spoon">
+            <img src="img/new/granola.png" alt="그래놀라 스푼">
+            <button class="tp" data-h="personal" style="left:20%;top:8%"><span class="cap">Personal</span><span class="desc">인적사항</span></button>
+            <button class="tp" data-h="edu" style="left:52%;top:5%"><span class="cap">Education</span><span class="desc">학력사항</span></button>
+            <button class="tp" data-h="award" style="left:86%;top:18%"><span class="cap">Awards</span><span class="desc">수상내역</span></button>
+            <button class="tp" data-h="license" style="left:14%;top:80%"><span class="cap">License</span><span class="desc">자격사항</span></button>
+            <button class="tp" data-h="career" style="left:56%;top:92%"><span class="cap">Career</span><span class="desc">교외 경력사항</span></button>
+            <button class="tp" data-h="campus" style="left:88%;top:70%"><span class="cap">Campus</span><span class="desc">교내활동</span></button>
+          </div>
+          <p class="hint">그래놀라 속 토핑을 눌러 이야기를 확인해 보세요.</p>
+        </div>
+        <div class="panel reveal" id="histPanel" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.5 빵 -->
+  <section class="sec" id="bread">
+    <div class="wrap bread-wrap">
+      <div class="sec-head reveal">
+        <div>
+          <h2 class="display">Bread<small>About me</small></h2>
+          <p class="lead"><b>반죽하고 숙성시켜 하나의 빵을 구워내듯,</b><br>기획을 완성하는 저의 방식을 소개합니다.</p>
+        </div>
+        <img class="obj" src="img/new/bread.png" alt="크루아상과 귀리빵" style="width:270px">
+      </div>
+      <div class="ways">
+        <article class="way reveal"><div class="no">01</div><p class="cap">Find</p><h3>한 알의 왜를 먼저 발견합니다.</h3>
+          <p>한 알에서 시작하는 귀리처럼 저도 크고 거창한 문제보다 사람들이 반복해서 겪는 작은 불편과 어색함을 먼저 봅니다. 그냥 지나치기보다 “왜 그럴까?”를 생각하고, 문제의 시작점을 찾아 기획으로 이어갑니다.</p></article>
+        <article class="way reveal"><div class="no">02</div><p class="cap">Mix</p><h3>서로 다른 생각을 잘 섞습니다.</h3>
+          <p>다양한 재료와 어우러지는 귀리처럼 저도 하나의 관점만 고집하기보다 기획 / 디자인 / 개발처럼 서로 다른 생각을 연결하며 일합니다. 각자의 시선이 따로 머무르지 않고, 하나의 더 나은 결과로 이어지도록 만드는 협업을 좋아합니다.</p></article>
+        <article class="way reveal"><div class="no">03</div><p class="cap">Fill</p><h3>필요한 것으로 속을 알차게 채웁니다.</h3>
+          <p>영양 가득 슈퍼푸드 귀리처럼 저 역시 여러 경험과 방법을 하나씩 쌓아두고, 문제에 따라 필요한 것을 골라 활용합니다. 많이 아는 것에서 끝나지 않고, 지금 필요한 것을 제대로 꺼내 쓰는 기획을 지향합니다.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.6 우유 -->
+  <section class="sec" id="milk">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <h2 class="display">Milk<small>툴 역량</small></h2>
+          <p class="lead"><b>기획할 때 곁들이는 툴 활용 능력을 소개합니다.</b><br>잔을 눌러 한 모금씩 마시면 활용 역량이 보여요.</p>
+        </div>
+      </div>
+      <div class="tools reveal" id="shelf"></div>
+      <div class="milk-cta"><button class="line-btn" id="drinkAll">우유 한 번에 마시기</button></div>
+    </div>
+  </section>
+
+  <!-- 1.7 쿠키 -->
+  <section class="sec" id="cookie">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <h2 class="display">Cookie<small>연락처</small></h2>
+          <p class="lead"><b>마지막까지 보셨다면, 다음 이야기는 함께해요.</b><br>새로운 기회와 협업을 기다립니다.</p>
+        </div>
+      </div>
+      <div class="cookies reveal">
+        <button class="ck" data-copy="oatrice100@gmail.com" data-msg="이메일 주소가 복사되었어요" aria-label="이메일 주소 복사">
+          <span class="bite"><img class="obj before" src="img/new/cookie-whole.png" alt=""><img class="obj after" src="img/new/cookie-bitten.png" alt=""></span><span class="cap" style="display:block">Mail</span><span class="desc" style="display:block">메일 · 눌러서 복사</span><span class="price" style="display:block">oatrice100@gmail.com</span>
+        </button>
+        <button class="ck" data-copy="010-5501-3114" data-msg="전화번호가 복사되었어요" aria-label="전화번호 복사">
+          <span class="bite"><img class="obj before" src="img/new/cookie-whole.png" alt=""><img class="obj after" src="img/new/cookie-bitten.png" alt=""></span><span class="cap" style="display:block">Phone</span><span class="desc" style="display:block">번호 · 눌러서 복사</span><span class="price" style="display:block">010-5501-3114</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 1.3 밥 (전체 프로젝트) -->
+<div id="bap-view" class="view">
+  <section class="sec">
+    <div class="wrap">
+      <button class="back" data-go="nurungji" aria-label="이전으로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="sec-head">
+        <p class="label">Bap<b>전체 프로젝트</b></p>
+        <h2>밥</h2>
+        <p>든든하고 알차게 지었습니다.<br>다양한 경험과 아이디어로 완성한 모든 프로젝트를 만나보세요.</p>
+      </div>
+      <div class="bap-box">
+        <aside class="cats"><div class="cats-in" id="cats" role="tablist" aria-label="프로젝트 카테고리"></div></aside>
+        <div class="bap-cards" id="bapCards"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <h2 class="display">Baek Kwiri</h2>
+    <p>작지만 속은 꽉 찬 귀리처럼, 알찬 기획자 백귀리입니다.<br>© 2026 Baek kwiri Portfolio. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="dim" id="dim"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <button class="m-close" id="mClose" aria-label="닫기"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="scroller" id="mScroll"></div>
+  <button class="m-top" id="mTop" aria-label="팝업 맨 위로"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 15l6-6 6 6"/></svg></button>
+</div>
+<button class="page-top" id="pageTop" aria-label="맨 위로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 15l6-6 6 6"/></svg></button>
+<div class="toast" id="toast"></div>
+<script>
+/* 프로젝트 데이터
+   - cover: 썸네일/표지 이미지 경로 (비우면 일러스트 표지 자동 생성)
+   - images: { why:[], process:[], board:[] } 이미지 경로 (비우면 자리표시)
+   - pdf / boardPdf: 원본 PDF, 화면설계서 PDF 경로 */
+const P = {
+  twosome:{type:"보고서", short:"Twosome Heart", color:["#E7EFD9","#4E6B2A"],
+    card:"사용성 평가 기반 “투썸하트 영수증 적립” 기능 진입 경로 개선 보고서",
+    title:"사용성 평가 기반 투썸하트 앱 ‘영수증 적립’ 기능 진입 경로 개선 보고서",
+    tags:["사용성 테스트","아이트래킹","UX개선"], period:"2026.03 ~ 2026.06",
+    award:"", kind:"보고서 · UX 개선",
+    one:"사용성 테스트와 아이트래킹으로 영수증 적립 기능의 탐색 문제를 분석하고, 사용자 기대에 맞춰 진입 경로를 개선한 프로젝트입니다.",
+    people:"2명", role:"문서 정리, 일정 관리, 아이트래킹 사전 준비",
+    skills:"사용성 평가 · 아이트래킹 분석 · 벤치마킹 · 정보구조(IA) 개선 · 프로토타이핑 · 화면설계",
+    intro:"투썸하트 앱의 ‘영수증 적립’ 기능을 더 쉽게 찾을 수 있도록 진입 경로를 개선한 UX 프로젝트입니다. 5명을 대상으로 사용성 테스트와 아이트래킹을 진행해 탐색을 방해하는 원인을 분석하고, 홈 화면과 메뉴 목록에 새로운 진입점을 설계했습니다. 개선 전후 평가에서 보고된 평균 수행 시간은 113.7초에서 13.4초로 감소했습니다.",
+    why:"포인트를 적립하려는 사용자는 적립 바코드나 ‘투썸하트’ 메뉴에서 관련 기능을 찾을 것으로 예상했지만, 영수증 적립은 마이페이지 안에 배치되어 있었습니다. 이러한 구조는 기능의 위치를 예측하기 어렵게 만들고, 여러 화면을 반복해서 탐색하게 했습니다. 실제 사용자의 행동과 시선 데이터를 통해 문제를 확인하고, 적립이 필요한 순간 자연스럽게 기능을 발견할 수 있는 경로를 제안하고자 했습니다.",
+    process:["영수증 적립 경험이 없는 라이트 유저 5명을 대상으로 기능 찾기 과제를 진행하고, 수행 시간·성공률·접근 경로와 시선 이동을 분석했습니다. 그 결과 마이페이지로 진입하는 단계에서 탐색 지연이 집중되었으며, 사용자들이 적립 바코드와 관련 메뉴를 반복해서 확인하는 모습을 발견했습니다.",
+      "이후 폴바셋·팀홀튼·해피포인트·버거킹의 유사 기능을 비교해 접근 단계, 배치 맥락, 용어의 명확성을 중심으로 개선 방향을 정했습니다. 이를 바탕으로 홈 화면의 적립 바코드 아래에 ‘영수증으로 적립’을 추가하고, 메뉴 목록에서 ‘영수증 적립’으로 바로 연결되는 경로를 설계했습니다.",
+      "페이퍼·디지털 프로토타입을 제작하고 2차 사용성 평가로 개선안을 검토했습니다. 보고서 기준 평균 수행 시간은 113.7초에서 13.4초로 약 88% 감소했으며, 최종 개선안을 화면설계서와 기존·개선 화면 비교로 구체화했습니다."],
+    others:["medi","nop","oreum"], cats:["nurungji","fried"]},
+
+  nop:{type:"기획서", short:"NOP!", color:["#FDE3C8","#B4621D"],
+    card:"외국인 관광객 바가지 방지 앱 서비스 “NOP(놉)” 기획서",
+    title:"외국인 관광객 바가지 방지 앱 서비스 ‘NOP 놉’ 기획서",
+    tags:["입선","신규 기획","사용자 중심 설계"], period:"2026.03 ~ 2026.06",
+    award:"제32회 커뮤니케이션디자인 국제 어워드 디지털미디어디자인 부문 ‘입선’", kind:"기획서 · 여행 서비스",
+    one:"시세 비교와 스캔 기반 가격 확인으로 외국인 관광객의 합리적인 소비를 돕는 여행 지원 앱 서비스입니다.",
+    people:"3명 — 백귀리·배민서·이연주", role:"",
+    skills:"문제 정의 · 사용자 분석 · 벤치마킹 · 서비스 전략 · 핵심 기능 기획 · 사용자 여정 설계",
+    intro:"NOP는 한국을 방문한 외국인 관광객이 낯선 언어와 화폐 환경에서도 가격을 이해하고 소비를 판단하도록 돕는 앱 서비스입니다. 평균 시세 검색, 간판·메뉴판·영수증 스캔, 거스름돈 계산과 상황별 대응 안내를 연결했습니다. 상점에 들어가기 전부터 결제하는 순간까지 필요한 정보를 한곳에서 확인하는 경험을 제안했습니다.",
+    why:"관광 중 발생하는 가격 문제에 주목하고, 현지 물가와 언어에 익숙하지 않은 외국인 관광객을 주요 사용자로 설정했습니다. 적정 가격의 기준을 알기 어렵고, 원화 계산이나 부당 요금에 대한 대응도 낯설다는 점이 소비 과정의 불안으로 이어지고 있었습니다. 이를 줄이기 위해 구매 현장에서 가격을 확인하고 다음 행동을 결정할 수 있는 서비스를 기획했습니다.",
+    process:["관광불편신고 자료를 분석해 가격 문제를 살펴보고, 외국인 관광객의 어려움을 페르소나로 구체화했습니다. 정보 비대칭, 상점에 대한 불안, 화폐 계산과 대응 방법의 부족을 주요 문제로 정리했습니다.",
+      "시세 검색, 이미지 번역, 지도, 환율 계산과 신고 등 기존 해결 방식을 비교한 뒤, 여러 도구를 오가는 부담을 줄이는 통합 서비스 방향을 설정했습니다. 가격과 상점 정보를 빠르게 이해할 수 있도록 신호등 색상의 판단 정보와 스캔 중심의 확인 방식을 제안했습니다.",
+      "최종적으로 이용 과정을 상점 입장 전·입장 후·결제로 나누고, 각 단계에 필요한 핵심 기능을 배치했습니다. 시세 확인부터 상점 선택, 메뉴·영수증 확인과 거스름돈 계산까지 이어지는 흐름을 사용자 여정으로 정리했습니다."],
+    others:["oreum","hana","khidi"], cats:["nurungji","team","fresh"]},
+
+  medi:{type:"기획서", short:"Medi-bridge", color:["#DDEBF0","#3F6E7E"],
+    card:"안산 다문화가정 의료 도우미 앱 서비스 “Medi-bridge” 기획서",
+    title:"안산 다문화가정 의료 도우미 서비스 기획서",
+    tags:["입선","지역특화","신규 기획"], period:"2026.03 ~ 2026.06",
+    award:"제32회 커뮤니케이션디자인 국제 어워드 기획 부문 ‘입선’", kind:"기획서 · 지역 특화 서비스",
+    one:"언어 장벽으로 끊기는 의료 이용 과정을 병원 탐색부터 진료 후 관리까지 연결하는 다문화가정 맞춤형 앱 서비스입니다.",
+    people:"3명 — 백귀리·윤다은·한수현", role:"",
+    skills:"지역 리서치 · 현장 관찰 및 인터뷰 · 사용자 여정 분석 · 서비스 기획 · 정보구조 설계 · 화면설계",
+    intro:"안산에 거주하는 다문화가정이 언어와 절차의 장벽 없이 의료 서비스를 이용하도록 돕는 앱 서비스입니다. 증상 기반 병원 탐색, 번역 문진표, 진료 과정 안내, 진료 내용 번역과 복약 안내를 하나의 흐름으로 설계했습니다. 병원과 지원기관의 현장 조사 및 인터뷰를 바탕으로 진료 전후에 필요한 정보를 연결했습니다.",
+    why:"지역 특화 서비스의 기회를 탐색하며 안산의 다문화 환경과 의료 이용의 어려움에 주목했습니다. 한국어가 익숙하지 않은 보호자는 병원을 선택하고 증상을 설명하는 과정뿐 아니라 접수 절차와 진료 후 안내를 이해하는 데에도 어려움을 겪고 있었습니다. 이에 필요한 정보를 찾는 것에서 더 나아가, 사용자가 다음 행동을 이해하고 진료를 끝까지 이어갈 수 있는 서비스를 기획했습니다.",
+    process:["지역 현황과 의료 지원 사례를 조사하고, 다문화가정 보호자·외국인 노동자·병원 실무자의 관점에서 이용 상황을 분석했습니다. 사용자 스토리, 페르소나와 여정 맵을 통해 언어 장벽, 절차의 불명확성, 정보 접근의 어려움을 정리했습니다.",
+      "이후 서울성모병원 국제진료센터 현장 관찰과 관계자 및 안산시 다문화가족지원센터 인터뷰를 통해 서비스 방향을 구체화했습니다. 의사소통뿐 아니라 언어 지원 병원 탐색, 비용 안내, 다음 절차의 가시화가 필요하다는 점을 확인했습니다.",
+      "조사 내용을 바탕으로 핵심 기능 8가지를 선정하고, 카드소팅과 정보구조 설계로 기능 간 연결을 정리했습니다. 최종적으로 병원 탐색부터 문진·진료·복약까지 이어지는 이용 흐름을 시나리오와 화면설계서로 구체화했습니다."],
+    others:["nop","oreum","hana"], cats:["nurungji","team","fresh"]},
+
+  oreum:{type:"기획서", short:"OREUM", color:["#E9E4F1","#5F5480"],
+    card:"쉬었음청년 대상 일상회복 사회복귀 브릿지 앱 서비스 “오름 OREUM” 기획서",
+    title:"고립·은둔 청년의 일상 회복과 사회참여를 돕는 앱 서비스 ‘오름 oreum’ 기획서",
+    tags:["신규 기획","팀장","단계별 서비스 설계"], period:"2026.09 ~ 현재",
+    award:"", kind:"기획서 · 일상 회복 및 사회참여 지원 서비스",
+    one:"혼자 시작할 수 있는 작은 행동 미션을 통해 일상 회복에서 사회참여까지 단계적으로 연결하는 앱 서비스입니다.",
+    people:"6명 — 배민서·백귀리·이나경·이연주·이준석·전예린", role:"팀장, 기획",
+    skills:"사용자 리서치 · 문제 정의 · 단계별 서비스 설계 · 참여 동기 설계 · 정보구조 설계 · 화면설계 · UI 디자인",
+    intro:"오름은 일상과 외부 활동을 다시 시작하기 어려운 고립·은둔 청년을 위한 단계형 회복 지원 앱 서비스입니다. 사용자의 상태에 맞는 작은 행동을 하루 하나씩 제안하고, 수행 인증과 기록·보상을 통해 반복 참여를 돕도록 설계했습니다. 일상 회복에서 외출과 교류로 행동 범위를 넓히고, 준비된 단계에서 기존 청년 지원 프로그램으로 연결하는 경험을 제안했습니다.",
+    why:"프로젝트 리서치에서는 상담이나 대면 참여 자체를 부담스러워하는 청년에게 기존 지원의 시작 단계가 장벽이 될 수 있다는 점에 주목했습니다. 현재 상태를 바꾸고 싶어도 무엇부터 해야 할지 모르거나, 외출을 계속 미루는 사용자에게는 혼자 시도할 수 있는 작은 행동이 필요했습니다. 이에 현재 가능한 행동부터 시작해 사회참여로 이어지는 중간 단계를 기획했습니다.",
+    process:["고립·은둔 청년 관련 조사와 인터뷰 자료, 기존 지원 프로그램을 분석해 일상 리듬의 약화와 초기 참여 장벽을 정리했습니다. 이후 사용자를 ‘일상 붕괴형’과 ‘외출 장벽형’으로 구분하고, 각 유형의 시작 수준과 지속 참여에 필요한 조건을 페르소나로 구체화했습니다.",
+      "행동활성화 원리를 참고해 ‘숨고르기·둘러보기·마주하기·도전하기’의 네 단계 챕터를 구성했습니다. 작은 일상 행동에서 외출과 교류로 범위를 넓히도록 미션을 배치하고, 상태 확인 결과에 따라 적절한 단계부터 시작하는 구조를 설계했습니다.",
+      "참여를 이어가도록 수행 인증, 연속 활동 기록, 리워드와 캐릭터 성장을 연결하고, 중단 후 다시 시도할 수 있는 복습·부활 미션을 마련했습니다. 최종적으로 정보구조와 화면설계서, 주요 UI를 제작하고 일상 회복과 지원 프로그램 연결을 확인할 평가 지표를 정리했습니다."],
+    others:["hana","khidi","twosome"], cats:["team","fresh"]},
+
+  hana:{type:"보고서", short:"HANATOUR", color:["#D9ECE9","#2F6E66"],
+    card:"2030 사용자의 여행상품 탐색을 위한 “하나투어” 앱 UX/UI 개선 보고서",
+    title:"2030 사용자의 여행상품 탐색을 위한 하나투어 앱 UX/UI 개선 보고서",
+    tags:["사용성 테스트","아이트래킹","정보구조 개선"], period:"2026.09 ~ 현재",
+    award:"", kind:"보고서 · UX/UI 개선",
+    one:"사용성 평가로 여행상품 탐색의 혼란을 확인하고, 이용 목적에 맞게 홈 화면과 메뉴 구조를 재설계한 프로젝트입니다.",
+    people:"3명 — 김아현·백귀리·한수현", role:"리서치 · 문서 구조화 · 일정 및 제출 관리 · 발표",
+    skills:"프로젝트 일정 관리 · 사용성 평가 · 아이트래킹 분석 · 요구사항 정의 · 정보구조 개선 · 기능 및 화면 설계",
+    intro:"하나투어 앱에 익숙하지 않은 2030 사용자가 여행 목적에 맞는 숙박·항공 상품을 쉽게 찾도록 탐색 구조를 개선한 프로젝트입니다. 사용성 테스트와 아이트래킹, 사후 인터뷰로 메뉴 선택 과정의 혼란을 확인하고 개선 요구사항을 도출했습니다. 국내·해외와 여행 형태를 기준으로 홈 화면과 전체 메뉴를 재구성하고, 기능정의서와 와이어프레임으로 구체화했습니다.",
+    why:"하나투어 앱은 다양한 상품과 콘텐츠를 제공하지만, 여행 지역·상품 유형·브랜드가 같은 수준에 섞여 있어 메뉴의 의미와 제공 범위를 파악하기 어려웠습니다. 사용자 평가에서도 국내 숙박 대신 ‘제주/국내’ 패키지에 들어가거나, 항공권 대신 결합상품을 선택하는 혼란이 관찰되었습니다. 사용자가 자신의 여행 목적에 맞는 탐색을 시작하도록 분류 기준과 메뉴명을 개선하고자 했습니다.",
+    process:["기업과 시장 자료, 공식인증예약센터 인터뷰를 바탕으로 앱 개선의 주요 타깃을 2030 사용자로 설정했습니다. 경쟁사 화면 비교와 휴리스틱 분석으로 문제를 가설화한 뒤, 5명을 대상으로 숙박·항공 예약 화면을 찾는 사용성 테스트와 아이트래킹을 진행했습니다.",
+      "평가 결과, 검색 조건 입력보다 원하는 상품의 진입점을 찾는 단계에서 어려움이 집중되었습니다. 시선 데이터와 사후 인터뷰를 함께 분석해 모호한 메뉴명, 높은 정보 밀도와 일관되지 않은 분류를 주요 문제로 정리하고, 사용자와 서비스 운영 관점을 반영한 요구사항 및 우선순위를 정의했습니다.",
+      "이를 바탕으로 국내·해외 탐색 범위를 먼저 구분하고, 자유여행·패키지 등 이용 목적에 따라 메뉴를 묶는 구조를 제안했습니다. 항공권과 결합상품의 명칭을 명확히 하고, 개선된 정보구조를 기능정의서·사용자 흐름도·홈 및 전체 메뉴 와이어프레임으로 구체화했습니다."],
+    others:["khidi","twosome","medi"], cats:["team","fried"]},
+
+  khidi:{type:"제안서", short:"KHIDI", color:["#F4DCD6","#9A4B3A"],
+    card:"한국보건산업진흥원(KHIDI) 대표홈페이지 UI/UX 개편 사업 제안서",
+    title:"한국보건산업진흥원(KHIDI) 대표홈페이지 UI/UX 개편 사업 제안서",
+    tags:["RFP 분석","공공 웹사이트","반응형 기획"], period:"2026.09 ~ 현재",
+    award:"", kind:"제안서 · 공공 웹사이트 UX/UI 개선",
+    one:"이용 목적 중심의 정보구조와 일관된 PC·모바일 탐색 경로로 정보 접근성을 높이는 웹사이트 개편 제안입니다.",
+    people:"2명 — 김아현·백귀리", role:"기획 책임 · 요구사항 및 사용자 분석 · 수행 범위 관리 · 국문 홈페이지 정보구조 및 화면 설계",
+    skills:"제안요청서(RFP) 분석 · 사용자 분석 · 벤치마킹 · 정보구조 설계 · 반응형 화면 기획 · 제안서 작성",
+    intro:"한국보건산업진흥원 대표홈페이지의 정보 탐색 경험을 개선하기 위한 웹사이트 개편 제안입니다. PC와 모바일의 서비스 접근 경로를 비교하고, 주요 사용자군의 이용 목적을 바탕으로 메뉴와 콘텐츠 구조를 재설계했습니다. 이용 목적별 정보 분류, 사업공고 핵심 정보의 구조화, 모바일 가독성 개선을 중심으로 국문 홈페이지의 정보구조와 주요 화면을 제안했습니다.",
+    why:"다양한 지원사업과 산업·연구 정보를 제공하는 홈페이지에서 사용자가 필요한 정보를 쉽게 찾을 수 있는지에 주목했습니다. 현황 분석에서는 PC의 주요 서비스 바로가기가 모바일에 없거나, 같은 메뉴의 구성이 기기마다 다른 문제가 확인되었습니다. 모바일 게시물 목록과 일부 표에서도 정보 확인에 불필요한 화면 이동이 필요했습니다. 이에 기기를 바꾸어도 익숙한 경로로 접근하고, 자신의 이용 목적에 맞는 정보를 한눈에 확인할 수 있도록 개선하고자 했습니다.",
+    process:["제안요청서의 요구사항을 분석해 사업의 목적과 수행 범위를 정리하고, PC·모바일 홈페이지를 직접 비교했습니다. 이를 통해 주요 서비스 접근 경로의 불일치, 모바일 게시물 목록의 가로 스크롤, 표의 과도한 줄바꿈 등 정보 탐색을 방해하는 요소를 도출했습니다.",
+      "이후 서비스 현황과 공개된 이용 자료를 바탕으로 주요 사용자를 5개 군으로 구분하고, 각 사용자군이 찾는 정보와 이용 목적을 정리했습니다. 한국산업기술진흥원·KOTRA·기업마당을 벤치마킹해 목적별 메뉴 구성, 핵심 정보의 우선 배치, 기기 간 일관성을 개선 방향으로 설정했습니다.",
+      "분석 결과를 요구사항별 대응 방안으로 연결하고, 국문 홈페이지의 메뉴와 정보구조 및 주요 화면 개선안을 설계했습니다. 사업공고의 핵심 정보와 모바일 게시물 목록을 읽기 쉽게 구성하고, 향후 사용성 평가에서 확인할 과업 성공률·수행 시간 등의 지표와 사업관리 계획을 함께 제시했습니다."],
+    others:["twosome","medi","nop"], cats:["fried"]},
+};
+
+/* 표지 · 원본/화면설계서 PDF · 상세 이미지 (포트폴리오_웹사이트_GPT 자료)
+   - 파일명은 FILE_ID 기준: img/projects/<f>.jpg, files/<f>.pdf, storyboards/<f>.pdf
+   - PREVIEWS: [기획이유, 도출과정]에 쓰는 원본 PDF 쪽 번호 → img/previews/<f>-preview-<쪽>.png
+   - BOARDS: 스토리보드 미리보기 장수 → img/boards/board-<f>-2.png 부터 */
+const FILE_ID = {twosome:"twosome", nop:"nop", medi:"medi", oreum:"oreum", hana:"hanatour", khidi:"khidi"};
+const PREVIEWS = {twosome:[5,14], nop:[4,24], medi:[8,64], oreum:[2,5], hanatour:[12,40], khidi:[10,60]};
+const BOARDS = {twosome:6, nop:0, medi:6, oreum:3, hanatour:3, khidi:5};
+Object.entries(FILE_ID).forEach(([id,f])=>Object.assign(P[id],{
+  cover:`img/projects/${f}.jpg`, pdf:`files/${f}.pdf`, boardPdf:`storyboards/${f}.pdf`,
+  images:{why:[`img/previews/${f}-preview-${PREVIEWS[f][0]}.png`], process:[`img/previews/${f}-preview-${PREVIEWS[f][1]}.png`]}}));
+
+/* 스토리보드 6종: 기본 정보는 원 프로젝트를 따르고 구분/담당 역할만 다름 */
+const SB = [
+  ["sb_twosome","twosome","스토리보드 · UX 개선","",["sb_medi","sb_nop","sb_oreum"]],
+  ["sb_medi","medi","스토리보드 · 지역 특화 서비스","",["sb_nop","sb_oreum","sb_khidi"]],
+  ["sb_nop","nop","스토리보드 · 여행 서비스","",["sb_oreum","sb_khidi","sb_hana"]],
+  ["sb_oreum","oreum","스토리보드 · 일상 회복 및 사회참여 지원 서비스","",["sb_khidi","sb_hana","sb_twosome"]],
+  ["sb_khidi","khidi","스토리보드 · 공공 웹사이트 UX/UI 개선",null,["sb_hana","sb_twosome","sb_medi"]],
+  ["sb_hana","hana","스토리보드 · UX/UI 개선",null,["sb_twosome","sb_medi","sb_nop"]],
+];
+SB.forEach(([id,base,kind,role,others])=>{
+  const b=P[base], f=FILE_ID[base];
+  P[id]={...b, type:"스토리보드", kind, award:"", role: role===null ? b.role : role, others, cats:[],
+    cover:`img/boards/board-${f}-cover.png`,
+    images:{board:Array.from({length:BOARDS[f]},(_,i)=>`img/boards/board-${f}-${i+2}.png`)},
+    card:b.card.replace(/(보고서|기획서|제안서)$/,"스토리보드"),
+    title:b.title.replace(/(보고서|기획서|제안서)$/,"스토리보드"),
+    tags:[...b.tags.filter(t=>t!=="입선").slice(0,2),"화면설계"]};
+});
+
+const ORDER = ["twosome","nop","medi","oreum","hana","khidi","sb_twosome","sb_medi","sb_nop","sb_oreum","sb_khidi","sb_hana"];
+const FEATURED = ["twosome","nop","medi"];
+const CATS = [
+  {id:"all", name:"전체", desc:"모든 프로젝트", icon:"bowl"},
+  {id:"nurungji", name:"누룽지", desc:"대표 프로젝트", icon:"nurungji"},
+  {id:"team", name:"비빔밥", desc:"팀 프로젝트", icon:"bibim"},
+  {id:"fresh", name:"갓 지은 밥", desc:"신규 서비스 기획", icon:"fresh"},
+  {id:"fried", name:"볶음밥", desc:"기존 서비스 개선", icon:"fried"},
+];
+
+/* 이력 */
+const HIST = {
+  personal:{t:"인적사항", kv:true, rows:[
+    ["성명","백귀리 (白貴利 / Baek kwiri)"],["생년월일","2006.12.25"],["주소","서울시 서초구"],
+    ["휴대전화",'<span class="copy-link" data-copy="010-5501-3114" data-msg="전화번호가 복사되었어요">010-5501-3114</span>'],
+    ["E-mail",'<span class="copy-link" data-copy="oatrice100@gmail.com" data-msg="이메일 주소가 복사되었어요">oatrice100@gmail.com</span>']]},
+  edu:{t:"학력사항", rows:[
+    ["2027.02","계원예술대학교 디지털미디어디자인과 기획 세부전공 졸업 예정"],
+    ["2026.03","계원예술대학교 디지털미디어디자인과 기획 세부전공"],
+    ["2025.03","계원예술대학교 디지털미디어디자인과 입학"],
+    ["2025.02","개포고등학교 졸업"]]},
+  award:{t:"수상내역", rows:[
+    ["2026.07","제32회 커뮤니케이션디자인 국제 어워드 기획 부문 ‘입선’","안산 다문화가정 의료 도우미 앱 서비스 “Medi-bridge” 기획서"],
+    ["2026.07","제32회 커뮤니케이션디자인 국제 어워드 디지털미디어디자인 부문 ‘입선’","외국인 관광객 바가지 방지 앱 서비스 “NOP(놉)”"],
+    ["2025.06","영상 기초 부문 연합 PT 우수작 선정","캠퍼스 속 숨은 기능 찾기 앱 서비스 캠파인더 기획 및 제작"]]},
+  campus:{t:"교내활동", rows:[
+    ["2026.09 ~ 현재","디지털미디어디자인과 졸업준비위원회 전시팀","전시팀 팀원 / 물품 관리 담당"],
+    ["2026.09 ~ 현재","디지털미디어디자인과 멘토링프로그램 멘토","학과 전공지식 및 툴 멘토링"],
+    ["2026.09 ~ 현재","캡스톤 디자인 팀 프로젝트 팀장","기획 담당 및 프로젝트 전체 관리<br>(프로젝트 방향 설정 / 전공 간 협업 조율 / 일정 관리 등)<br>[프로젝트명 : 쉬었음 청년 대상 사회활동 복귀 브릿지 앱 서비스 “RESTEP”]"],
+    ["2026.03 ~ 현재","프로젝트프로포절 팀 프로젝트 팀장","요구사항 분석 / 제안 방향 수립 / 제안서 구조화<br>[프로젝트명 : KHIDI 대표홈페이지 UI/UX 개편 사업 제안서]"],
+    ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 운영팀","동아리 운영 참여"],
+    ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 카드뉴스팀 기획부원","학과 홍보 및 소개 카드뉴스 기획 및 제작"],
+    ["2025.09 ~ 2025.12","디지털미디어디자인과 기획 동아리 [초안] 카드뉴스팀 기획부원","학과 홍보 및 소개 카드뉴스 기획 및 제작"]]},
+  career:{t:"교외 경력사항", rows:[
+    ["2025.05 ~ 2026.03","투썸플레이스 서초양재점 스태프 근무","매장 홀 관리, 매장 오픈 및 마감, 손님응대"]]},
+  license:{t:"자격사항", rows:[["2025.04","자동차운전면허증 1종 보통"]]},
+};
+
+/* 툴 */
+const TOOLS = [
+  {g:"설계와 프로토타이핑", items:[["Figma","기획서 제작<br>프로토타이핑","#A259FF"],["PowerPoint","기획서, 스토리보드<br>제작","#D35230"]]},
+  {g:"문서와 정보 정리", items:[["Excel","IA 작성<br>일정 관리","#1D6F42"],["Notion","일정 관리<br>자료 정리<br>문서 아카이빙","#2F2F2F"]]},
+  {g:"AI 도구", items:[["ChatGPT","기획 구조화<br>정보 탐색·비교<br>바이브 코딩","#10A37F"],["Claude","문서 구조화<br>화면 설계 보조<br>결과 피드백","#D97757"],["Gemini","정보 탐색·비교<br>결과 피드백<br>기획 흐름 검토","#4B7BE5"]]},
+];
+
+
+/* 이력서·자기소개서 PDF (같은 폴더의 files/ 안) */
+const FILES = {
+  resume: "files/resume.pdf",
+  coverLetter: "files/cover-letter.pdf"
+};
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+
+const TYPE_EN={"보고서":"Report","기획서":"Service plan","제안서":"Proposal","스토리보드":"Storyboard"};
+function cardHTML(id,delay){
+  const p=P[id];
+  return `<button class="item ${delay===undefined?'reveal':''}" ${delay!==undefined?`style="animation-delay:${delay}s"`:''} data-open="${id}" aria-label="${p.title} 자세히 보기">
+    <div class="th">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
+    <span class="cap">${p.short} <span style="color:var(--ink-3);font-size:12px">· ${TYPE_EN[p.type]}</span></span>
+    <span class="desc">${p.card}</span>
+    <span class="tags">${p.tags.map(t=>"#"+t).join("  ")}</span>
+    <span class="price">— ${p.period}</span></button>`;
+}
+/* 밥 페이지용 카드 (화면설계서 레이아웃) */
+function cardHTML2(id,delay){
+  const p=P[id];
+  return `<button class="card" style="animation-delay:${delay||0}s" data-open="${id}" aria-label="${p.title} 자세히 보기">
+    <div class="thumb">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
+    <div class="body"><span class="tag">${p.type}</span><h3>${p.card}</h3>
+      <div class="hash">${p.tags.map(t=>"#"+t).join("  ")}</div><div class="period">${p.period}</div></div></button>`;
+}
+function imgBlock(src,label){
+  return `<div class="ph-img ${src?"has":""}">${src?`<img src="${src}" alt="${label}" loading="lazy">`:`<span>${label}</span>`}</div>`;
+}
+
+/* 누룽지 / 밥 */
+$("#featuredCards").innerHTML = FEATURED.map(id=>cardHTML(id)).join("");
+let curCat="all";
+function inCat(id,c){return c==="all"||P[id].cats.includes(c)}
+function renderBap(){
+  $("#cats").innerHTML = CATS.map(c=>{
+    const n=ORDER.filter(id=>inCat(id,c.id)).length;
+    return `<button class="cat ${c.id===curCat?'on':''}" role="tab" aria-selected="${c.id===curCat}" data-cat="${c.id}"><span class="ci"><img src="img/new/${c.id==="nurungji"?"nurungji":"rice"}.png" alt=""></span><span><b>${c.name}</b><small>${c.desc}</small></span><span class="cnt">${String(n).padStart(2,"0")}</span></button>`;
+  }).join("");
+  $("#bapCards").innerHTML = ORDER.filter(id=>inCat(id,curCat)).map((id,i)=>cardHTML2(id,i*0.04)).join("");
+}
+$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;curCat=b.dataset.cat;renderBap();});
+renderBap();
+
+/* 화면 전환 (메인 원스크롤 ↔ 밥 페이지) */
+let view="main";
+function setView(v){view=v;$("#main-view").classList.toggle("show",v==="main");$("#bap-view").classList.toggle("show",v==="bap");updateGnb();}
+function go(target,cat){
+  if(target==="bap"){ if(cat)curCat=cat; renderBap(); setView("bap"); window.scrollTo({top:0,behavior:"instant"}); history.replaceState(null,"","#bap"); return; }
+  const wasBap=view!=="main"; setView("main");
+  if(target==="top") window.scrollTo({top:0,behavior:wasBap?"instant":"smooth"});
+  else document.getElementById(target).scrollIntoView({behavior:wasBap?"instant":"smooth"});
+  history.replaceState(null,"","#"+target);
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-go]"); if(a){e.preventDefault();go(a.dataset.go,a.dataset.cat);return;}
+  const c=e.target.closest(".item[data-open], .card[data-open]"); if(c){openModal(c.dataset.open,view);return;}
+  const cp=e.target.closest("[data-copy]"); if(cp){if(cp.classList.contains("ck"))bite(cp);copy(cp.dataset.copy,cp.dataset.msg);return;}
+  const f=e.target.closest("[data-file]"); if(f){const url=FILES[f.dataset.file]; if(!url){e.preventDefault();toast("파일이 곧 연결될 예정이에요");} else {f.href=encodeURI(url);f.target="_blank";}}
+});
+
+/* GNB 현재 위치 */
+function setActive(id){$$(".menu a").forEach(a=>a.classList.toggle("on",a.dataset.go===id));}
+function updateGnb(){
+  $("#pageTop").classList.toggle("show",scrollY>600);$("#gnb").classList.toggle("solid",scrollY>10||view!=="main");
+  if(view!=="main"){setActive("bap");return;}
+  let cur=null;
+  ["nurungji","granola","bread","milk","cookie"].forEach(id=>{if(document.getElementById(id).getBoundingClientRect().top<innerHeight*.45)cur=id;});
+  if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur="cookie";
+  setActive(cur);
+}
+addEventListener("scroll",updateGnb,{passive:true});
+$("#pageTop").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:.12});
+$$(".reveal").forEach(el=>io.observe(el));
+
+/* 쿠키 한 입: 잠깐 베어 문 쿠키를 보여주고 다시 원래 쿠키로 */
+const biteT=new WeakMap();
+function bite(ck){clearTimeout(biteT.get(ck));ck.classList.remove("bitten");void ck.offsetWidth;ck.classList.add("bitten");
+  biteT.set(ck,setTimeout(()=>ck.classList.remove("bitten"),1600));}
+
+let tT;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>t.classList.remove("show"),1800);}
+function copy(text,msg){
+  (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>toast(msg||"복사되었어요")).catch(()=>{
+    const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast(msg||"복사되었어요");}catch(e){toast(text);} ta.remove();});
+}
+
+/* 그래놀라 */
+const panel=$("#histPanel");
+function renderPanel(key){
+  $$(".tp").forEach(b=>b.classList.toggle("on",b.dataset.h===key));
+  if(!key){panel.innerHTML=`<div class="empty fade"><p class="cap">Choose a topping</p><h4 style="margin:10px 0 0">그래놀라 속 이야기를 골라보세요</h4><p class="desc">왼쪽 토핑을 누르면 이곳에서 이력을 확인할 수 있습니다.</p></div>`;return;}
+  const h=HIST[key];
+  panel.innerHTML=`<button class="close" aria-label="이력 닫기">CLOSE ✕</button>
+    <div class="fade" style="display:flex;flex-direction:column;min-height:0;flex:1">
+    <span class="lbl">ABOUT BAEK KWIRI</span><h4>${h.t}</h4>
+    <div class="scroller">${h.rows.map(r=>`<dl class="hist ${h.kv?'kv':''}"><dt>${r[0]}</dt><dd>${r[1]}${r[2]?`<small>${r[2]}</small>`:""}</dd></dl>`).join("")}</div></div>`;
+  panel.querySelector(".close").onclick=()=>renderPanel(null);
+}
+$$(".tp").forEach(b=>b.onclick=()=>renderPanel(b.classList.contains("on")?null:b.dataset.h));
+renderPanel(null);
+
+/* 우유 */
+$("#shelf").innerHTML = TOOLS.map(g=>`<div class="tool-group"><h3>${g.g}</h3><div class="tool-row">${g.items.map(([n,ab])=>`
+  <button class="tool" aria-pressed="false" aria-label="${n} 활용 역량 보기">
+    <span class="glass"><img src="img/new/milk-empty.png" alt=""><img class="full" src="img/new/milk-full.png" alt=""><span class="ab">${ab}</span></span>
+    <span class="cap">${n}</span><span class="price gd">눌러서 활용 역량 보기</span>
+  </button>`).join("")}</div></div>`).join("");
+function setGlass(w,empty){w.classList.toggle("empty",empty);w.setAttribute("aria-pressed",empty);w.querySelector(".gd").textContent=empty?"다시 눌러 우유 채우기":"눌러서 활용 역량 보기";}
+function syncDrink(){const all=$$(".tool").every(w=>w.classList.contains("empty"));$("#drinkAll").textContent=all?"우유 다시 채우기":"우유 한 번에 마시기";}
+$$(".tool").forEach(w=>w.onclick=()=>{setGlass(w,!w.classList.contains("empty"));syncDrink();});
+$("#drinkAll").onclick=()=>{const fill=$("#drinkAll").textContent.includes("다시");$$(".tool").forEach((w,i)=>setTimeout(()=>setGlass(w,!fill),i*90));$("#drinkAll").textContent=fill?"우유 한 번에 마시기":"우유 다시 채우기";};
+
+/* 프로젝트 상세 팝업 */
+const modal=$("#modal"),dim=$("#dim"),ms=$("#mScroll");
+let modalFrom="main",lastFocus;
+function infoRow(k,v,cls=""){const e=!v;return `<dt>${k}</dt><dd class="${e?'none':cls}">${e?(k==="수상"?"등록된 정보 없음":"추후 업데이트"):v}</dd>`;}
+function linkBtn(label,url,ink){return `<a class="btn" href="${url?encodeURI(url):'#'}" ${url?'target="_blank" rel="noopener"':'data-nofile'}>${label}</a>`;}
+function buttons(p){return p.type==="제안서"?`<div class="m-btns">${linkBtn("제안서 전체 보기",p.pdf,true)}</div>`:`<div class="m-btns">${linkBtn("프로젝트 전체 보기",p.pdf,true)}${linkBtn("화면설계서 전체 보기",p.boardPdf)}</div>`;}
+function renderModal(id){
+  const p=P[id],im=p.images||{},a4=p.type==="제안서";
+  /* 등록된 이미지가 있으면 그 이미지만, 없으면 n칸 자리표시 */
+  const imgs=(arr,n,cls,lab)=>{const has=(arr||[]).filter(Boolean);
+    return has.length?`<div class="m-imgs ${has.length===1&&!a4?"c1":cls}">${has.map((s,i)=>imgBlock(s,lab(i))).join("")}</div>`
+      :`<div class="m-imgs ${cls}">${Array.from({length:n},(_,i)=>imgBlock("",lab(i))).join("")}</div>`;};
+  const pr=im.process||[];
+  let body;
+  if(p.type==="스토리보드"){
+    body=`<div class="m-block"><div class="m-why-h"><h3>화면으로 옮겼습니다.</h3><small>스토리보드</small></div>${imgs(im.board,6,"c2",i=>"스토리보드 "+(i+1))}</div>`;
+  }else{
+    const [p1,p2,p3]=p.process;
+    body=`<div class="m-block"><div class="m-why-h"><h3>발견한 한 알의 왜.</h3><small>프로젝트 기획이유</small></div>
+      <div class="m-text"><p>${p.why}</p></div>
+      ${a4?imgs(im.why,3,"c3 a4",i=>"제안서 "+(i+1)):imgs(im.why,4,"c2",i=>"기획 배경 "+(i+1))}</div>
+    <div class="m-block"><div class="m-why-h"><h3>알차게 채웠습니다.</h3><small>프로젝트 도출과정</small></div>
+      <div class="m-text"><p>${p1}</p><p>${p2}</p>${a4?`<p>${p3}</p>`:""}</div>
+      ${a4?imgs(pr,3,"c3 a4",i=>"제안서 "+(i+4)):imgs(pr.slice(0,2),2,"c2",i=>"도출 과정 "+(i+1))+`<div class="m-text" style="margin-top:32px"><p>${p3}</p></div>`+(pr.length&&pr.length<=2?"":imgs(pr.slice(2,4),2,"c2",i=>"도출 과정 "+(i+3)))}</div>`;
+  }
+  ms.innerHTML=`<div class="m-head"><p class="lbl">PROJECT DETAILS</p><h2>프로젝트 자세히 보기</h2></div>
+    <div class="m-row1">
+      <div class="m-cover">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
+      <div class="m-intro"><h5>프로젝트 소개</h5><p>${p.intro}</p>${buttons(p)}</div>
+    </div>
+    <div class="m-row2"><h3 class="m-title" id="mTitle">${p.title}</h3>
+      <dl class="m-info">${infoRow("수상",p.award,"award")}${infoRow("구분",p.kind)}${infoRow("한 줄 소개",p.one)}${infoRow("기간",p.period)}${infoRow("진행 인원",p.people)}${infoRow("담당 역할",p.role)}${infoRow("역량",p.skills)}</dl></div>
+    ${body}
+    <div style="margin-top:40px">${buttons(p)}</div>
+    <div class="m-others"><h4>다른 프로젝트 둘러보기</h4><ul class="others">${p.others.map(o=>`<li><a href="#" data-switch="${o}">• ${P[o].title} →</a></li>`).join("")}</ul></div>
+    <div class="m-back"><button class="btn line" id="backBap">밥 · 전체 프로젝트로 돌아가기</button></div>`;
+  ms.scrollTop=0;
+  $$("[data-switch]",ms).forEach(a=>a.onclick=e=>{e.preventDefault();renderModal(a.dataset.switch);});
+  $$("[data-nofile]",ms).forEach(a=>a.onclick=e=>{e.preventDefault();toast("PDF 파일이 곧 연결될 예정이에요");});
+  $("#backBap").onclick=()=>{closeModal(); if(modalFrom==="main")go("bap","all");};
+}
+function openModal(id,from){modalFrom=from;lastFocus=document.activeElement;renderModal(id);dim.classList.add("open");modal.classList.add("open");document.documentElement.style.overflow="hidden";setTimeout(()=>$("#mClose").focus(),50);}
+function closeModal(){dim.classList.remove("open");modal.classList.remove("open");document.documentElement.style.overflow="";lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true});}
+$("#mClose").onclick=closeModal;dim.onclick=closeModal;
+addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("open"))closeModal();
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches?.('[role="button"][data-copy]')){e.preventDefault();e.target.click();}});
+ms.addEventListener("scroll",()=>$("#mTop").classList.toggle("show",ms.scrollTop>400));
+$("#mTop").onclick=()=>ms.scrollTo({top:0,behavior:"smooth"});
+
+if(location.hash==="#bap")go("bap","all");else updateGnb();
+
+/* 반자동 스크롤 (메인 원스크롤)
+   - 휠 한 번: 다음/이전 섹션으로 부드럽게 이동, 화면보다 긴 섹션은 화면 80%씩 나눠서 이동
+   - 터치·키보드·스크롤바로 움직이면 섹션 경계 근처에서만 살짝 맞춰줌 */
+(()=>{
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)");
+  let anim=0,idle=0,userScroll=false,dragging=false,lockUntil=0,wheelTotal=0,lastWheel=0,wheelDir=0;
+  const active=()=>view==="main"&&!modal.classList.contains("open")&&!reduced.matches;
+  const sections=()=>$$("#main-view > section");
+  const topOf=el=>el.getBoundingClientRect().top+scrollY-$("#gnb").offsetHeight;
+  const maxY=()=>document.documentElement.scrollHeight-innerHeight;
+  function cancel(){clearTimeout(idle);cancelAnimationFrame(anim);anim=0;}
+  function slideTo(target,duration){
+    cancel();userScroll=false;target=Math.max(0,Math.min(maxY(),target));
+    const from=scrollY,dist=target-from;if(Math.abs(dist)<2)return;
+    const t0=performance.now();lockUntil=t0+duration+180;
+    const tick=now=>{const p=Math.min(1,(now-t0)/duration),e=p*p*p*(p*(p*6-15)+10);
+      window.scrollTo({top:from+dist*e,behavior:"instant"});anim=p<1?requestAnimationFrame(tick):0;};
+    anim=requestAnimationFrame(tick);
+  }
+  function wheel(e){
+    if(!active()||e.ctrlKey||e.target.closest?.(".scroller,.modal,input,textarea"))return;
+    if(!e.deltaY||Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
+    const now=performance.now(),dir=Math.sign(e.deltaY),vp=innerHeight-$("#gnb").offsetHeight;
+    const pos=sections().map(el=>({top:Math.max(0,topOf(el)),bottom:topOf(el)+el.offsetHeight}));
+    const i=pos.reduce((f,p,k)=>p.top<=scrollY+4?k:f,0),cur=pos[i],bottom=Math.max(cur.top,cur.bottom-vp);
+    // 남은 양이 화면의 35% 미만이면 잘게 끊지 않고 바로 다음/이전 섹션으로
+    const small=vp*.35;
+    let target;
+    if(dir>0){
+      if(bottom-scrollY>small)target=Math.min(bottom,scrollY+vp*.8);
+      else if(i<pos.length-1)target=pos[i+1].top;
+      else if(scrollY<maxY()-2)target=maxY();   // 마지막 섹션 → 푸터까지
+      else return;
+    }else{
+      if(scrollY-cur.top>small)target=Math.max(cur.top,scrollY-vp*.8);
+      else if(scrollY>cur.top+5)target=cur.top;
+      else if(i>0){const p=pos[i-1],end=p.bottom-vp;target=end-p.top>small?Math.max(p.top,end):p.top;}
+      else return;
+    }
+    e.preventDefault();
+    if(anim||now<lockUntil){lastWheel=now;return;}
+    // 트랙패드 관성은 이전 이동이 끝날 때까지 무시
+    if(now-lastWheel>160||dir!==wheelDir)wheelTotal=0;
+    wheelDir=dir;lastWheel=now;
+    wheelTotal+=Math.abs(e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1));
+    if(wheelTotal>=22){wheelTotal=0;slideTo(target,1000);}
+  }
+  function settle(){
+    if(!userScroll||dragging||anim||!active())return;
+    userScroll=false;
+    const pts=sections().map(el=>Math.max(0,Math.min(maxY(),topOf(el))));
+    const target=pts.sort((a,b)=>Math.abs(a-scrollY)-Math.abs(b-scrollY))[0],d=Math.abs(target-scrollY);
+    if(d>=3&&d<=Math.min(220,innerHeight*.25))slideTo(target,800);   // 경계 근처에서만 보정
+  }
+  const input=()=>{cancel();userScroll=true;};
+  addEventListener("wheel",wheel,{passive:false});
+  addEventListener("touchmove",input,{passive:true});
+  addEventListener("keydown",e=>{if(["ArrowDown","ArrowUp","PageDown","PageUp"," "].includes(e.key)&&!e.target.closest("input,textarea,button"))input();});
+  addEventListener("pointerdown",()=>{dragging=true;cancel();},{passive:true});
+  addEventListener("pointerup",()=>{dragging=false;},{passive:true});
+  addEventListener("scroll",()=>{if(anim||!userScroll)return;clearTimeout(idle);idle=setTimeout(settle,240);},{passive:true});
+  addEventListener("resize",cancel,{passive:true});
+})();
+</script>
+</body>
+</html>
