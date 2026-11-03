@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 귀리 한 알: 사이트 일러스트 색(귀리 베이지 + 토스트 브라운) -->
+  <g transform="rotate(32 32 32)">
+    <path d="M32 3C46 13 53 27 51 40C49 53 41 61 32 61C23 61 15 53 13 40C11 27 18 13 32 3Z" fill="#E2B661"/>
+    <path d="M32 9C24 17 20 28 21 39C22 48 26 55 32 58C27 52 25 45 25 38C25 28 28 17 32 9Z" fill="#F1D69A"/>
+    <path d="M32 12V54" stroke="#B4582A" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
+</svg>
