@@ -9,9 +9,11 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=Pinyon+Script&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Pinyon+Script&family=Black+Han+Sans&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
+/* 음식 타이틀 서체: 속초바다 돋움 (fonts/ 폴더에 포함) */
+@font-face{font-family:"Sokcho Bada Dotum";src:url("fonts/SokchoBadaDotum.ttf") format("truetype");font-display:swap}
 /* =========================================================
    TONE & MANNER — 크림색 종이 + 그레인, 채도 낮은 자연색(잎·머스터드·토마토·자두·흙), 그림자 없는 평면 일러스트
    ========================================================= */
@@ -22,7 +24,8 @@
   /* 서체: 굵은 그로테스크(큰 영문 제목) · 스크립트(로고) · 모노(작은 라벨) · 굵은 한글 디스플레이(히어로) · 본문 프리텐다드 */
   --en:"Bricolage Grotesque","Pretendard",sans-serif;
   --script:"Pinyon Script",cursive;
-  --mono:"IBM Plex Mono","Pretendard",monospace;
+  /* 숫자·날짜·작은 라벨도 프리텐다드로 통일 (예전 모노 서체 자리) */
+  --mono:"Pretendard","Pretendard Variable",-apple-system,"Apple SD Gothic Neo",sans-serif;
   --ko-display:"Black Han Sans","Pretendard",sans-serif;
   --sans:"Pretendard","Pretendard Variable",-apple-system,"Apple SD Gothic Neo",sans-serif;
   --gnb:72px;
@@ -49,9 +52,9 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .cap{font-family:var(--en);font-weight:700;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
 .desc{font-size:13px;font-weight:300;line-height:1.55;color:var(--ink-2)}
 .price{font-family:var(--mono);font-size:12.5px;letter-spacing:0;color:var(--ink);margin-top:2px}
-/* 섹션 큰 제목: 그로테스크 대문자, 진한 올리브 (레퍼런스 limoncello 라벨처럼 차분하게) */
-.display{font-family:var(--en);font-weight:700;font-size:clamp(64px,8.4vw,118px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--ink)}
-.display small{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:-.01em;margin-left:16px;vertical-align:baseline;color:var(--ink);text-transform:none}
+/* 섹션 음식 타이틀: 한글 + 속초바다 돋움, 이전 크기(118px)의 절반 */
+.display{font-family:"Sokcho Bada Dotum",var(--sans);font-weight:400;font-size:clamp(36px,4.2vw,59px);line-height:1.1;letter-spacing:0;color:var(--ink)}
+.display small{font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:-.01em;margin-left:14px;vertical-align:baseline;color:var(--ink)}
 .display small b{font-weight:400}
 .copy-link{border-bottom:1px solid var(--ink-3);cursor:pointer;transition:border-color .2s}
 .copy-link:hover{border-color:var(--ink)}
@@ -65,7 +68,9 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .gnb{position:fixed;inset:0 0 auto 0;height:var(--gnb);z-index:50;background:rgba(243,238,226,.92);backdrop-filter:blur(8px);transition:box-shadow .3s}
 .gnb.solid{box-shadow:0 1px 0 var(--line)}
 .gnb .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
-.bi{font-family:var(--script);font-size:30px;line-height:1;color:var(--ink)}
+/* BI: 귀리 한 알 */
+.bi{display:flex;align-items:center}
+.bi img{height:38px;width:auto}
 .menu{display:flex;gap:30px}
 .menu a{display:flex;flex-direction:column;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);transition:color .2s}
 .menu a small{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-3);margin-top:2px}
@@ -74,15 +79,18 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .menu b{font-weight:400}
 
 /* ---------- 1.1 HERO (화면설계서: 중앙 정렬 카피 → 버튼 → 대표 이미지, 우측 연락처) ---------- */
-.hero{padding:calc(var(--gnb) + 80px) 0 120px;text-align:center}
+.hero{padding:calc(var(--gnb) + 80px) 0 120px;text-align:center;min-height:100dvh}
 .hero .wrap{position:relative}
 .hero-copy .sub{display:block;font-size:clamp(26px,3vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.3;color:var(--ink)}
 .hero-copy .main{display:block;font-family:var(--ko-display);font-size:clamp(46px,6.6vw,88px);font-weight:400;letter-spacing:-.01em;line-height:1.15;color:var(--ink);margin-top:8px}
 .hero-btns{display:flex;justify-content:center;gap:10px;margin-top:34px}
 .hero-btns .btn{min-width:186px}
-/* 대표 이미지: 귀리 다발 일러스트 (세로로 긴 그림이라 높이 기준으로 맞춤) */
-.hero-graphic{display:flex;justify-content:center;height:clamp(300px,44vh,440px);margin:44px auto 0}
-.hero-graphic img{height:100%;width:auto}
+/* 대표 이미지: 귀리 몇 알 (가로로 넓은 그림이라 너비 기준) */
+.hero-graphic{display:flex;justify-content:center;margin:clamp(56px,9vh,110px) auto 0}
+.hero-graphic img{width:clamp(260px,28vw,440px);height:auto}
+/* 굴러다니는 귀리 한 알: GNB(50) 아래, 콘텐츠 위 */
+.oat-go{position:fixed;left:0;top:0;z-index:45;pointer-events:none;user-select:none;display:none;height:auto;max-width:none;will-change:transform}
+.oat-go.on{display:block}
 .hero-contact{position:absolute;right:0;bottom:12%;display:flex;flex-direction:column;gap:22px;text-align:left}
 .hero-contact li{list-style:none;display:flex;align-items:center;gap:14px}
 .hero-contact .ic{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center}
@@ -91,16 +99,23 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 
 /* ---------- SECTION ---------- */
 .sec{padding:150px 0}
-/* 반자동 스크롤: 메인 섹션은 최소 한 화면(GNB 아래) 높이 */
-#main-view>section{min-height:calc(100dvh - var(--gnb))}
-/* 한 화면에 섹션 전체(제목~하단 버튼)가 들어오도록: 여백을 화면 높이에 맞춰 줄이고 세로 가운데 정렬 */
-.sec.fit{padding:clamp(32px,5vh,64px) 0;display:flex;flex-direction:column;justify-content:center}
-.sec.fit .sec-head{margin-bottom:clamp(28px,4.5vh,48px)}
-.sec.fit .more{margin-top:clamp(28px,4.5vh,44px)}
-.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:96px}
-.sec-head .lead{font-size:15px;font-weight:300;line-height:1.75;color:var(--ink-2);margin-top:26px}
-.sec-head .lead b{font-weight:500;color:var(--ink)}
-.sec-head .obj{width:240px;flex:none}
+/* 섹션 공통 (1920×1080 기준): 섹션 하나 = 화면 하나(GNB 아래).
+   세로가 더 긴 모니터에서도 다음 섹션이 보이지 않게 최소 높이를 화면 높이로 두고,
+   내용은 위쪽 정렬 + 같은 위쪽 여백 → 반자동 스크롤이 멈추면 모든 섹션 타이틀이 같은 위치에 옴 */
+#main-view>section.sec{min-height:calc(100dvh - var(--gnb));padding:clamp(64px,12vh,130px) 0 clamp(40px,6vh,72px);display:flex;flex-direction:column;justify-content:flex-start}
+/* 세로가 낮은 화면(노트북 등)에서는 위아래 여백을 줄여 한 화면에 들어가게 */
+@media (max-height:760px){#main-view>section.sec{padding-top:6vh;padding-bottom:24px}#main-view .sec-head{margin-bottom:20px}}
+/* 타이틀·소개 한 줄 묶음을 오른쪽 이미지와 세로 가운데 정렬. 이미지가 없는 섹션(쿠키)도 같은 높이를 둬서 타이틀 위치를 맞춤 */
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:40px;min-height:clamp(90px,16vh,150px);margin-bottom:clamp(28px,4.5vh,48px)}
+/* 타이틀은 위쪽 같은 자리에 두고, 본문은 그 아래 남은 공간의 가운데에 → 화면이 한쪽으로 비지 않게 */
+#main-view>section.sec>.wrap{flex:1;display:flex;flex-direction:column}
+#main-view>section.sec>.wrap>.sec-head{flex:none}
+#main-view>section.sec>.wrap>.sec-head+*{margin-top:auto}
+#main-view>section.sec>.wrap>:last-child{margin-bottom:auto}
+/* 섹션 설명: 한 줄, 서체·굵기·색·크기 통일 */
+.sec-head .lead{font-size:15px;font-weight:400;line-height:1.6;color:var(--ink-2);margin-top:14px}
+.sec-head .obj{height:clamp(90px,16vh,150px);width:auto;flex:none}
+.more{margin-top:clamp(28px,4.5vh,44px)}
 
 /* ---------- project items ---------- */
 .items{display:grid;grid-template-columns:repeat(3,1fr);gap:70px 28px}
@@ -114,27 +129,23 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .item .cap{font-size:15.5px;margin-bottom:8px}
 .item .desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
 .item .tags{font-size:12px;font-weight:300;color:var(--ink-3);margin-top:6px}
-.more{margin-top:80px;text-align:center}
 
 /* ---------- granola ---------- */
-/* 스푼 칸 너비를 화면 높이에 맞춰 줄여 섹션이 한 화면에 들어오게 */
-.granola-grid{display:grid;grid-template-columns:min(48%,clamp(320px,50vh,480px)) 1fr;gap:70px;align-items:start}
-.spoon{position:relative;aspect-ratio:1/.98;width:100%;max-width:480px;margin:0 auto}
-.spoon img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.tp{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:flex-start;background:rgba(250,247,239,.88);padding:4px 8px;transition:opacity .2s}
-.tp .cap{font-size:13.5px}
-.tp .desc{font-size:12px}
-.tp:hover .cap,.tp.on .cap{text-decoration:underline;text-underline-offset:5px}
-.tp.on .cap{font-weight:500}
+/* 이미지는 누룽지·빵처럼 섹션 제목 오른쪽, 아래는 토핑(이력 항목) 목록 + 이력 패널 */
+.granola-grid{display:grid;grid-template-columns:340px 1fr;gap:60px;align-items:start}
+.toppings{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tp{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper);transition:background .2s,border-color .2s,color .2s}
+.tp .nm{font-size:15px;font-weight:600;color:var(--ink)}
+.tp:hover{border-color:var(--ink-3)}
+.tp.on{background:var(--ink);border-color:var(--ink)}
+.tp.on .nm{color:var(--on-ink)}
 .hint{font-size:12.5px;font-weight:300;color:var(--ink-3);margin-top:14px}
-.panel{border-left:1px solid var(--line);padding:6px 0 6px 50px;height:clamp(340px,52vh,500px);display:flex;flex-direction:column;position:relative}
-.panel .empty{margin:auto 0}
-.panel .empty .cap{font-size:22px;font-weight:300;letter-spacing:.1em}
-.panel .empty p{margin-top:14px}
+.panel{border-left:1px solid var(--line);padding:6px 0 6px 50px;height:clamp(300px,46vh,480px);display:flex;flex-direction:column;position:relative}
+.panel .guide{font-size:15px;font-weight:300;line-height:1.7;color:var(--ink-2)}
 .panel .close{position:absolute;top:0;right:0;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2)}
 .panel .close:hover{color:var(--ink)}
 .panel .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--leaf)}
-.panel h4{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:10px 0 30px}
+.panel h4{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px;padding-right:80px}
 .panel .scroller{overflow-y:auto;padding-right:14px;margin-right:-14px}
 .scroller::-webkit-scrollbar{width:3px}.scroller::-webkit-scrollbar-thumb{background:var(--line)}
 .hist{display:grid;grid-template-columns:130px 1fr;gap:4px 18px;padding:15px 0;border-top:1px solid var(--line)}
@@ -150,36 +161,37 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .bread-wrap{position:relative}
 .bread-wrap .obj.a{position:absolute;right:-30px;top:-70px;width:200px;transform:rotate(14deg)}
 .ways{display:grid;grid-template-columns:repeat(3,1fr);gap:50px}
-.way .no{font-family:var(--en);font-weight:800;font-size:46px;color:var(--leaf);line-height:1}
-.way .cap{margin:22px 0 4px;font-size:14px}
-.way h3{font-size:19px;font-weight:600;line-height:1.5;letter-spacing:-.02em;margin-bottom:14px}
-.way p{font-size:14.5px;font-weight:300;line-height:1.9;color:var(--ink-2)}
+/* 빵: 화면 높이에 맞춰 번호·소제목·본문을 키워 빈 공간이 덜 남게 */
+.way{border-top:1px solid var(--line);padding-top:clamp(24px,3.5vh,36px)}
+.way .no{font-family:var(--sans);font-weight:800;font-size:clamp(46px,7vh,72px);color:var(--leaf);line-height:1}
+.way h3{font-size:clamp(19px,2.5vh,24px);font-weight:600;line-height:1.5;letter-spacing:-.02em;margin:clamp(20px,3vh,32px) 0 14px}
+.way p{font-size:clamp(14.5px,1.8vh,16.5px);font-weight:300;line-height:1.9;color:var(--ink-2);text-align:justify;text-justify:inter-word;word-break:keep-all}   /* 양 끝 맞춤, 단어 중간에서 줄바꿈하지 않음 */
 
 /* ---------- milk ---------- */
-/* 한 화면에 보이도록: 3개 그룹(2·2·3잔)을 한 줄로, 섹션 여백 축소 */
-#milk.sec{padding:90px 0}
-#milk .sec-head{margin-bottom:52px}
-.tools{display:grid;grid-template-columns:2fr 2fr 3fr;gap:36px}
+/* 3개 그룹(2·2·3잔)을 한 줄로: 같은 그룹끼리는 가깝게, 그룹 사이는 넓게 */
+.tools{display:grid;grid-template-columns:2fr 2fr 3fr;gap:64px}
 .tool-group h3{font-size:13px;font-weight:500;color:var(--ink-2);text-align:center;padding-bottom:12px;margin-bottom:26px;border-bottom:1px solid var(--line)}
-.tool-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px}
+.tool-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,clamp(120px,15vh,150px));justify-content:center;gap:2px}
 .tool{display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;width:100%}
 /* 일러스트 우유잔: 빈 잔 위에 가득 찬 잔을 겹치고, 마시면 가득 찬 잔이 위에서부터 잘려 내려가 빈 잔이 드러남 */
-.tool .glass{position:relative;display:block;width:min(100%,104px);aspect-ratio:358/618;margin-bottom:16px;transition:transform .4s var(--ease)}
+.tool .glass{position:relative;display:block;width:min(100%,clamp(104px,14vh,136px));aspect-ratio:358/618;margin-bottom:16px;transition:transform .4s var(--ease)}
 .tool:hover .glass{transform:translateY(-5px)}
 .tool .glass img{position:absolute;inset:0;width:100%;height:100%}
 .tool .glass .full{clip-path:inset(0 0 0 0);transition:clip-path .9s var(--ease)}
 .tool.empty .glass .full{clip-path:inset(100% 0 0 0)}
-.tool .glass .ab{position:absolute;inset:20% 9% 16%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;font-weight:500;line-height:1.55;color:var(--ink);opacity:0;transition:opacity .4s}
+/* 마시기 전에도 역량이 우유 너머로 살짝 비쳐 보이게 */
+.tool .glass .ab{position:absolute;inset:20% 9% 16%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;font-weight:500;line-height:1.55;color:var(--ink);opacity:.22;transition:opacity .4s}
 .tool.empty .glass .ab{opacity:1;transition-delay:.45s}
 .tool .cap{font-size:14px;margin-bottom:4px}
 .tool .price{color:var(--ink-3);font-size:11.5px;margin-top:0}
-.milk-cta{margin-top:48px;text-align:center}
+.milk-cta{margin-top:clamp(28px,4.5vh,44px);text-align:center}
 
 /* ---------- cookie ---------- */
-.cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;max-width:640px}
-.ck{cursor:pointer;display:block;width:100%}
+/* 쿠키: 본문 콘텐츠와 글자 모두 가운데 정렬 */
+.cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;width:min(100%,760px);margin-left:auto;margin-right:auto}
+.ck{cursor:pointer;display:block;width:100%;text-align:center}
 /* 쿠키: 누르면 한 입 베어 문 쿠키로 바뀜 */
-.ck .bite{position:relative;display:block;width:150px;aspect-ratio:1;margin-bottom:28px;transition:transform .6s var(--ease)}
+.ck .bite{position:relative;display:block;width:clamp(130px,18vh,180px);aspect-ratio:1;margin:0 auto 28px;transition:transform .6s var(--ease)}
 .ck .bite img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .15s}
 .ck .bite .after,.ck.bitten .bite .before{opacity:0}
 .ck.bitten .bite .after{opacity:1}
@@ -187,46 +199,51 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .ck.bitten .bite{animation:nibble .25s ease-out}
 @keyframes nibble{0%{scale:1}45%{scale:.92;rotate:-5deg}100%{scale:1;rotate:0deg}}
 @media (prefers-reduced-motion:reduce){.ck.bitten .bite{animation:none}}
-.ck .cap{margin-bottom:8px}
-.ck .price{font-size:15px;text-transform:none;letter-spacing:.02em}
+.ck .cap{margin-bottom:8px;font-size:clamp(17px,2.3vh,21px)}
+.ck .desc{font-size:clamp(13px,1.6vh,15px)}
+.ck .price{font-size:clamp(15px,2vh,18px);text-transform:none;letter-spacing:.02em}
 
 /* ---------- footer ---------- */
-footer{padding:100px 0 60px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
-footer .display{font-family:var(--script);font-weight:400;font-size:64px;line-height:1.1;letter-spacing:0;text-transform:none;color:var(--ink)}
+footer{padding:36px 0 32px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:40px}
+/* 푸터 BI: GNB와 같은 귀리 한 알 (조금 크게) */
+.foot-bi img{height:46px}
 footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-align:right}
 
 /* =========== 밥 페이지 · 상세 팝업 : 화면설계서 레이아웃 =========== */
-/* 버튼 (설계서: 진한 사각 버튼 + ↗/→) */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:46px;padding:0 24px;background:var(--ink);color:var(--on-ink);font-size:14px;font-weight:500;letter-spacing:.01em;white-space:nowrap;border:1px solid var(--ink);transition:background .25s,color .25s}
+/* 버튼 (설계서: 진한 버튼 + ↗/→), 모서리 R값 10px */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:46px;padding:0 24px;border-radius:10px;background:var(--ink);color:var(--on-ink);font-size:14px;font-weight:500;letter-spacing:.01em;white-space:nowrap;border:1px solid var(--ink);transition:background .25s,color .25s}
 .btn:hover{background:var(--paper);color:var(--ink)}
 .btn.line{background:var(--paper);color:var(--ink)}
 .btn.line:hover{background:var(--ink);color:var(--on-ink)}
 
 /* ---------- 프로젝트 카드 (썸네일 / 문서유형 태그 / 프로젝트명 / 해시태그) ---------- */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.card{text-align:left;border:1px solid var(--line);background:var(--paper);display:flex;flex-direction:column;cursor:pointer;width:100%;transition:transform .45s var(--ease),box-shadow .45s,border-color .3s}
+.card{text-align:left;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;cursor:pointer;width:100%;transition:transform .45s var(--ease),box-shadow .45s,border-color .3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 30px 50px -36px rgba(52,56,44,.35);border-color:var(--ink-3)}
 .thumb{aspect-ratio:16/9;background:var(--soft);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
 .thumb img{width:100%;height:100%;object-fit:contain}
+/* 대표 프로젝트 카드: 화면이 낮으면 이미지 높이를 줄여 한 화면에 들어오게 */
+#featuredCards .thumb{aspect-ratio:auto;height:clamp(140px,25vh,240px)}
+#featuredCards .card .body{padding:clamp(14px,2.2vh,22px) 24px clamp(16px,2.6vh,26px);gap:clamp(8px,1.3vh,12px)}
 .thumb span{font-family:var(--en);font-weight:700;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center;padding:0 16px}
 .card .body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:12px;flex:1}
-.tag{align-self:flex-start;font-size:12px;font-weight:500;padding:4px 12px;border:1px solid var(--leaf);color:var(--leaf);border-radius:999px}
-.card h3{font-size:16.5px;font-weight:700;line-height:1.55;letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
-.card .hash{font-size:12.5px;font-weight:300;color:var(--ink-2)}
+.tag{align-self:flex-start;font-size:12.5px;font-weight:500;padding:5px 14px;border:1px solid var(--ink);color:var(--ink);border-radius:999px}
+.card h3{font-size:17px;font-weight:700;line-height:1.55;letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em}
+/* 해시태그: 줄바꿈 없이 한 줄 */
+.card .hash{font-size:12.5px;font-weight:300;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .period{font-family:var(--mono);font-size:12px;letter-spacing:0;color:var(--ink-3);margin-top:auto}
-.more{display:flex;justify-content:center;margin-top:60px}
+.more{display:flex;justify-content:center}
 
 /* ---------- 밥 페이지 섹션 타이틀 (화면설계서: 가운데 정렬) ---------- */
-#bap-view .sec-head{display:block;text-align:center;margin-bottom:70px}
-#bap-view .sec-head .label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
-#bap-view .sec-head .label b{font-family:var(--sans);font-weight:400;letter-spacing:0;color:var(--ink-2);margin-left:8px}
-#bap-view .sec-head h2{font-size:52px;font-weight:300;letter-spacing:-.02em;margin:16px 0 22px}
-#bap-view .sec-head p{font-size:15.5px;font-weight:300;line-height:1.8;color:var(--ink-2)}
+/* 헤더는 메인 섹션과 같은 스타일(.sec-head/.display/.lead)을 그대로 씀 — 타이틀 위치도 메인과 동일 */
 /* ---------- 1.3 밥 ---------- */
 .view{display:none}.view.show{display:block}
 #bap-view{padding-top:var(--gnb)}
-#bap-view .sec{padding-top:70px}
+#bap-view .sec{padding-top:clamp(64px,12vh,130px)}
+/* 헤더 밥 이미지: 그릇 크기·바닥 위치를 고정한 틀 (김이 나는 밥은 틀 위로 살짝 넘침) */
+#bap-view .bap-obj{display:block;position:relative;aspect-ratio:600/563}
+#bap-view .bap-obj img{position:absolute;bottom:0;left:50%;width:calc(100% * var(--k,1));margin-left:calc(-50% * var(--k,1));height:auto;max-width:none}
 .back{position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center;transition:background .2s,color .2s}
 .back:hover{background:var(--ink);color:var(--on-ink)}
 .bap-box{display:grid;grid-template-columns:270px 1fr;border:1px solid var(--line)}
@@ -242,7 +259,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .cat.on{background:var(--ink);color:var(--on-ink)}
 .cat.on small,.cat.on .cnt{color:rgba(250,247,239,.65)}
 .bap-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;padding:34px}
-.bap-cards .card{animation:fade .5s var(--ease) both}
+.bap-cards .card[hidden]{display:none}
 
 /* ---------- 1.3 프로젝트 상세 팝업 ---------- */
 .dim{position:fixed;inset:0;background:rgba(40,43,33,.45);z-index:90;opacity:0;pointer-events:none;transition:opacity .35s}
@@ -256,23 +273,35 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .m-top{position:absolute;right:28px;bottom:24px;z-index:3;width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;opacity:0;transition:opacity .3s}
 .m-top.show{opacity:1}
 .m-head{margin-bottom:28px}
-.m-head .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--leaf)}
-.m-head h2{font-size:22px;font-weight:700;margin-top:6px}
-.m-row1{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+/* 헤더: 예전 영문 라벨 스타일 그대로, 한글만 */
+.m-head .lbl{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--leaf)}
+/* 1행: 썸네일 | 소개·버튼 — 버튼을 아래로 붙여 썸네일 아랫선과 맞춤 / 2행: 프로젝트명·정보표는 썸네일 열 */
+.m-row1{display:grid;grid-template-columns:1fr 1fr;column-gap:40px;align-items:start}
+.m-cover{grid-column:1;grid-row:1;align-self:stretch}
+.m-intro{grid-column:2;grid-row:1;align-self:stretch;display:flex;flex-direction:column}
+.m-intro .m-btns{margin-top:auto;padding-top:16px}
+/* 프로젝트명 아래 정보는 팝업 전체 폭을 써서 항목마다 한 줄로 */
+.m-row2{grid-column:1 / -1;grid-row:2}
+.m-info dd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .m-cover{aspect-ratio:16/9;background:var(--soft);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line)}
 .m-cover img{width:100%;height:100%;object-fit:contain}
 .m-cover span{font-family:var(--en);font-weight:700;font-size:30px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center}
-.m-intro h5{font-size:16px;font-weight:700;margin-bottom:12px}
-.m-intro p{font-size:14.5px;font-weight:300;line-height:1.9;color:var(--ink-2)}
+.m-intro h5{font-size:16px;font-weight:700;margin-bottom:10px}
+.m-intro p{font-size:14px;font-weight:300;line-height:1.8;color:var(--ink-2)}
 .m-btns{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
 .m-btns .btn{height:42px;font-size:13px;padding:0 20px}
-.m-row2{margin-top:30px;max-width:520px}
-.m-title{font-size:20px;font-weight:700;line-height:1.5;letter-spacing:-.02em;margin-bottom:20px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* 버튼이 3개면 한 줄에 들어가도록 조금 좁게 */
+.m-btns .btn:first-child:nth-last-child(3),.m-btns .btn:first-child:nth-last-child(3)~.btn{padding:0 14px}
+.m-row2{margin-top:28px}
+/* 프로젝트명: 단어 단위로 끊고 줄 길이를 고르게 */
+.m-title{font-size:20px;font-weight:700;line-height:1.5;letter-spacing:-.02em;margin-bottom:20px;word-break:keep-all;text-wrap:balance}
 .m-info{display:grid;grid-template-columns:90px 1fr;row-gap:12px}
 .m-info dt{font-size:13px;color:var(--ink-3)}
 .m-info dd{font-size:13.5px;line-height:1.65}
 .m-info dd.none{color:var(--ink-3)}
-.m-info dd.award{font-weight:600;color:var(--tomato)}
+/* 수상: 형광펜으로 칠한 듯 아래쪽 절반에 머스터드 */
+.m-info dd.award{font-weight:600;color:var(--ink)}
+.m-info dd.award mark{color:inherit;background:linear-gradient(transparent 52%,rgba(221,178,74,.55) 52%);padding:0 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .m-block{margin-top:60px;padding-top:44px;border-top:1px solid var(--line)}
 .m-why-h{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
 .m-why-h h3{font-size:28px;font-weight:700;letter-spacing:-.03em}
@@ -280,7 +309,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .m-text p{font-size:15px;font-weight:300;line-height:1.95}
 .m-text p+p{margin-top:14px}
 .m-imgs{display:grid;gap:14px;margin-top:30px}
-.m-imgs.c2{grid-template-columns:1fr 1fr}.m-imgs.c3{grid-template-columns:repeat(3,1fr)}
+.m-imgs.c2{grid-template-columns:1fr 1fr}.m-imgs.c3{grid-template-columns:repeat(3,1fr)}.m-imgs.c4{grid-template-columns:repeat(4,1fr)}
 .ph-img{background:var(--soft);aspect-ratio:16/10;position:relative;overflow:hidden}
 .m-imgs.a4 .ph-img{aspect-ratio:1/1.414}
 .ph-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -288,6 +317,12 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .m-imgs.c1{grid-template-columns:1fr}
 .ph-img.has,.m-imgs.a4 .ph-img.has{aspect-ratio:auto;background:var(--paper);border:1px solid var(--line)}
 .ph-img.has img{position:static;height:auto}
+/* 원본 PDF에서 뽑은 미리보기 — 3장이면 첫 장을 크게 */
+.m-shot{margin:0;min-width:0}
+.m-shot .frame{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+.m-shot img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.m-shot figcaption{margin-top:10px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.m-imgs.odd>.m-shot:first-child{grid-column:1 / -1}
 .m-others{margin-top:60px;padding-top:40px;border-top:1px solid var(--line)}
 .m-others h4{font-size:17px;font-weight:700;margin-bottom:12px}
 .others li{list-style:none}
@@ -295,7 +330,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .others a:hover{text-decoration-color:var(--ink)}
 .m-back{display:flex;justify-content:center;margin-top:50px}
 
-.toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);background:var(--ink);color:var(--on-ink);padding:12px 22px;font-size:13px;opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:200}
+.toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);background:var(--ink);color:var(--on-ink);padding:12px 22px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:200}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 /* Top btn (진한 원 + ^) */
 .page-top{position:fixed;right:30px;bottom:30px;width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;z-index:40;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -307,7 +342,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
   .sec-head{flex-direction:column;align-items:flex-start}
   .hero-contact{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:18px 32px;margin-top:44px}
   .items{grid-template-columns:1fr 1fr}
-  .granola-grid,.m-top-grid{grid-template-columns:1fr}
+  .granola-grid,.m-top-grid,.cards{grid-template-columns:1fr}
   .panel{border-left:0;border-top:1px solid var(--line);padding:40px 0 0}
   .ways{grid-template-columns:1fr}
   .tools{grid-template-columns:1fr 1fr;gap:40px 28px}
@@ -316,6 +351,8 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 @media (max-width:640px){
   .menu{display:none}
   .items,.m-imgs.c2,.m-imgs.c3,.tools{grid-template-columns:1fr}
+  .m-imgs.c4{grid-template-columns:1fr 1fr}
+  .m-row1{grid-template-columns:1fr;row-gap:24px}.m-cover,.m-intro,.m-row2{grid-column:1;grid-row:auto}
   .hero-btns{flex-direction:column;align-items:center}
   .hero-contact{flex-direction:column;align-items:center}
   .modal .scroller{padding:60px 24px 80px}
@@ -326,14 +363,14 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 
 <header class="gnb" id="gnb">
   <div class="wrap">
-    <a href="#top" class="bi" data-go="top">Baek Kwiri</a>
+    <a href="#top" class="bi" data-go="top" aria-label="백귀리 홈"><img src="img/new/bi-oat.png" alt="귀리 한 알 — 백귀리"></a>
     <nav class="menu" aria-label="주요 메뉴">
-      <a href="#nurungji" data-go="nurungji"><b>NURUNGJI</b><small>대표 프로젝트</small></a>
-      <a href="#bap" data-go="bap"><b>BAP</b><small>전체 프로젝트</small></a>
-      <a href="#granola" data-go="granola"><b>GRANOLA</b><small>이력</small></a>
-      <a href="#bread" data-go="bread"><b>BREAD</b><small>About me</small></a>
-      <a href="#milk" data-go="milk"><b>MILK</b><small>툴 역량</small></a>
-      <a href="#cookie" data-go="cookie"><b>COOKIE</b><small>연락처</small></a>
+      <a href="#nurungji" data-go="nurungji"><b>밥</b><small>대표 프로젝트</small></a>
+      <a href="#bap" data-go="bap"><b>밥</b><small>전체 프로젝트</small></a>
+      <a href="#granola" data-go="granola"><b>그래놀라</b><small>이력</small></a>
+      <a href="#bread" data-go="bread"><b>빵</b><small>자기소개</small></a>
+      <a href="#milk" data-go="milk"><b>우유</b><small>툴 역량</small></a>
+      <a href="#cookie" data-go="cookie"><b>쿠키</b><small>연락처</small></a>
     </nav>
   </div>
 </header>
@@ -351,7 +388,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
         <a class="btn" href="#" data-file="coverLetter">자기소개서 바로 보기 <span aria-hidden="true">↗</span></a>
       </div>
       <!-- 4. 메인 그래픽 (클릭 기능 없음) -->
-      <div class="hero-graphic"><img src="img/new/hero-oat.png" alt="리본으로 묶은 귀리 다발과 귀리 알갱이 일러스트"></div>
+      <div class="hero-graphic"><img src="img/new/hero-grains.png" alt="귀리 몇 알 일러스트"></div>
       <!-- 5·6. 이메일 / 연락처 (Text Link, 클릭 시 복사) -->
       <ul class="hero-contact">
         <li><span class="ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg></span>
@@ -361,19 +398,21 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
       </ul>
     </div>
   </section>
+  <!-- 스크롤을 따라 섹션 그림 사이를 굴러다니는 귀리 한 알 (히어로의 오른쪽 아래 귀리에서 출발) -->
+  <img class="oat-go" id="oatGo" src="img/new/oat-grain.png" alt="" aria-hidden="true">
 
   <!-- 1.2 누룽지 -->
   <section class="sec fit" id="nurungji">
     <div class="wrap">
       <div class="sec-head reveal">
         <div>
-          <h2 class="display">Nurungji<small>대표 프로젝트</small></h2>
-          <p class="lead"><b>가장 맛있는 부분을 골랐습니다.</b><br>저의 역량이 진하게 담긴 대표 프로젝트입니다.</p>
+          <h2 class="display">밥</h2>
+          <p class="lead">가장 맛있는 부분을 골랐습니다. 저의 역량이 진하게 담긴 대표 프로젝트입니다.</p>
         </div>
-        <img class="obj" src="img/new/nurungji.png" alt="누룽지" style="width:280px">
+        <img class="obj" src="img/new/rice.png" alt="밥">
       </div>
-      <div class="items" id="featuredCards"></div>
-      <div class="more reveal"><a href="#bap" class="txt-btn" data-go="bap" data-cat="all">밥 · 전체 프로젝트 보기 →</a></div>
+      <div class="cards" id="featuredCards"></div>
+      <div class="more reveal"><a href="#bap" class="btn" data-go="bap" data-cat="all">전체 프로젝트 보기 <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
 
@@ -382,20 +421,20 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
     <div class="wrap">
       <div class="sec-head reveal">
         <div>
-          <h2 class="display">Granola<small>이력</small></h2>
-          <p class="lead"><b>서로 다른 경험이 모여 지금의 저를 만들었습니다.</b><br>학력부터 활동까지, 쌓아온 이력을 소개합니다.</p>
+          <h2 class="display">그래놀라</h2>
+          <p class="lead">서로 다른 경험이 모여 지금의 저를 만들었습니다. 학력부터 활동까지, 쌓아온 이력을 소개합니다.</p>
         </div>
+        <img class="obj" src="img/new/granola-bar.png" alt="그래놀라 바">
       </div>
       <div class="granola-grid">
         <div class="reveal">
-          <div class="spoon">
-            <img src="img/new/granola.png" alt="그래놀라 스푼">
-            <button class="tp" data-h="personal" style="left:20%;top:8%"><span class="cap">Personal</span><span class="desc">인적사항</span></button>
-            <button class="tp" data-h="edu" style="left:52%;top:5%"><span class="cap">Education</span><span class="desc">학력사항</span></button>
-            <button class="tp" data-h="award" style="left:86%;top:18%"><span class="cap">Awards</span><span class="desc">수상내역</span></button>
-            <button class="tp" data-h="license" style="left:14%;top:80%"><span class="cap">License</span><span class="desc">자격사항</span></button>
-            <button class="tp" data-h="career" style="left:56%;top:92%"><span class="cap">Career</span><span class="desc">교외 경력사항</span></button>
-            <button class="tp" data-h="campus" style="left:88%;top:70%"><span class="cap">Campus</span><span class="desc">교내활동</span></button>
+          <div class="toppings">
+            <button class="tp" data-h="personal"><span class="nm">인적사항</span></button>
+            <button class="tp" data-h="edu"><span class="nm">학력사항</span></button>
+            <button class="tp" data-h="award"><span class="nm">수상내역</span></button>
+            <button class="tp" data-h="campus"><span class="nm">교내활동</span></button>
+            <button class="tp" data-h="career"><span class="nm">교외 경력사항</span></button>
+            <button class="tp" data-h="license"><span class="nm">자격사항</span></button>
           </div>
           <p class="hint">그래놀라 속 토핑을 눌러 이야기를 확인해 보세요.</p>
         </div>
@@ -409,17 +448,17 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
     <div class="wrap bread-wrap">
       <div class="sec-head reveal">
         <div>
-          <h2 class="display">Bread<small>About me</small></h2>
-          <p class="lead"><b>반죽하고 숙성시켜 하나의 빵을 구워내듯,</b><br>기획을 완성하는 저의 방식을 소개합니다.</p>
+          <h2 class="display">빵</h2>
+          <p class="lead">반죽하고 숙성시켜 하나의 빵을 구워내듯, 기획을 완성하는 저의 방식을 소개합니다.</p>
         </div>
-        <img class="obj" src="img/new/bread.png" alt="크루아상과 귀리빵" style="width:270px">
+        <img class="obj" src="img/new/bread.png" alt="크루아상과 귀리빵">
       </div>
       <div class="ways">
-        <article class="way reveal"><div class="no">01</div><p class="cap">Find</p><h3>한 알의 왜를 먼저 발견합니다.</h3>
+        <article class="way reveal"><div class="no">01</div><h3>한 알의 왜를 먼저 발견합니다.</h3>
           <p>한 알에서 시작하는 귀리처럼 저도 크고 거창한 문제보다 사람들이 반복해서 겪는 작은 불편과 어색함을 먼저 봅니다. 그냥 지나치기보다 “왜 그럴까?”를 생각하고, 문제의 시작점을 찾아 기획으로 이어갑니다.</p></article>
-        <article class="way reveal"><div class="no">02</div><p class="cap">Mix</p><h3>서로 다른 생각을 잘 섞습니다.</h3>
-          <p>다양한 재료와 어우러지는 귀리처럼 저도 하나의 관점만 고집하기보다 기획 / 디자인 / 개발처럼 서로 다른 생각을 연결하며 일합니다. 각자의 시선이 따로 머무르지 않고, 하나의 더 나은 결과로 이어지도록 만드는 협업을 좋아합니다.</p></article>
-        <article class="way reveal"><div class="no">03</div><p class="cap">Fill</p><h3>필요한 것으로 속을 알차게 채웁니다.</h3>
+        <article class="way reveal"><div class="no">02</div><h3>서로 다른 생각을 잘 섞습니다.</h3>
+          <p>다양한 재료와 어우러지는 귀리처럼 저도 하나의 관점만 고집하기보다 기획·디자인·개발처럼 서로 다른 생각을 연결하며 일합니다. 각자의 시선이 따로 머무르지 않고, 하나의 더 나은 결과로 이어지도록 만드는 협업을 좋아합니다.</p></article>
+        <article class="way reveal"><div class="no">03</div><h3>필요한 것으로 속을 알차게 채웁니다.</h3>
           <p>영양 가득 슈퍼푸드 귀리처럼 저 역시 여러 경험과 방법을 하나씩 쌓아두고, 문제에 따라 필요한 것을 골라 활용합니다. 많이 아는 것에서 끝나지 않고, 지금 필요한 것을 제대로 꺼내 쓰는 기획을 지향합니다.</p></article>
       </div>
     </div>
@@ -430,12 +469,14 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
     <div class="wrap">
       <div class="sec-head reveal">
         <div>
-          <h2 class="display">Milk<small>툴 역량</small></h2>
-          <p class="lead"><b>기획할 때 곁들이는 툴 활용 능력을 소개합니다.</b><br>잔을 눌러 한 모금씩 마시면 활용 역량이 보여요.</p>
+          <h2 class="display">우유</h2>
+          <p class="lead">기획할 때 곁들이는 툴 활용 능력을 소개합니다. 잔을 눌러 한 모금씩 마시면 활용 역량이 보여요.</p>
         </div>
+        <!-- 우유팩 그림 (img/new/milk-carton.png 를 넣으면 자동으로 나타남, 없으면 숨김) -->
+        <img class="obj" id="milkCarton" src="img/new/milk-carton.png" alt="우유팩" onerror="this.remove()">
       </div>
       <div class="tools reveal" id="shelf"></div>
-      <div class="milk-cta"><button class="line-btn" id="drinkAll">우유 한 번에 마시기</button></div>
+      <div class="milk-cta"><button class="btn" id="drinkAll">우유 한 번에 마시기</button></div>
     </div>
   </section>
 
@@ -444,8 +485,8 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
     <div class="wrap">
       <div class="sec-head reveal">
         <div>
-          <h2 class="display">Cookie<small>연락처</small></h2>
-          <p class="lead"><b>마지막까지 보셨다면, 다음 이야기는 함께해요.</b><br>새로운 기회와 협업을 기다립니다.</p>
+          <h2 class="display">쿠키</h2>
+          <p class="lead">마지막까지 보셨다면, 다음 이야기는 함께해요. 새로운 기회와 협업을 기다립니다.</p>
         </div>
       </div>
       <div class="cookies reveal">
@@ -464,11 +505,13 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 <div id="bap-view" class="view">
   <section class="sec">
     <div class="wrap">
-      <button class="back" data-go="nurungji" aria-label="이전으로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <!-- 메인 섹션과 같은 헤더 (오른쪽 이미지는 왼쪽 카테고리를 누를 때마다 바뀜) -->
       <div class="sec-head">
-        <p class="label">Bap<b>전체 프로젝트</b></p>
-        <h2>밥</h2>
-        <p>든든하고 알차게 지었습니다.<br>다양한 경험과 아이디어로 완성한 모든 프로젝트를 만나보세요.</p>
+        <div>
+          <h2 class="display">밥</h2>
+          <p class="lead">든든하고 알차게 지었습니다. 다양한 경험과 아이디어로 완성한 모든 프로젝트를 만나보세요.</p>
+        </div>
+        <span class="obj bap-obj" id="bapHeadBox"><img id="bapHeadImg" src="img/new/rice.png" alt="밥"></span>
       </div>
       <div class="bap-box">
         <aside class="cats"><div class="cats-in" id="cats" role="tablist" aria-label="프로젝트 카테고리"></div></aside>
@@ -480,7 +523,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 
 <footer>
   <div class="wrap">
-    <h2 class="display">Baek Kwiri</h2>
+    <a href="#top" class="bi foot-bi" data-go="top" aria-label="맨 위로"><img src="img/new/bi-oat.png" alt="귀리 한 알 — 백귀리"></a>
     <p>작지만 속은 꽉 찬 귀리처럼, 알찬 기획자 백귀리입니다.<br>© 2026 Baek kwiri Portfolio. All rights reserved.</p>
   </div>
 </footer>
@@ -500,8 +543,8 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
    - pdf / boardPdf: 원본 PDF, 화면설계서 PDF 경로 */
 const P = {
   twosome:{type:"보고서", short:"Twosome Heart", color:["#E7EFD9","#4E6B2A"],
-    card:"사용성 평가 기반 “투썸하트 영수증 적립” 기능 진입 경로 개선 보고서",
-    title:"사용성 평가 기반 투썸하트 앱 ‘영수증 적립’ 기능 진입 경로 개선 보고서",
+    card:"사용성 평가 기반 “투썸하트 영수증 적립” 기능\n진입 경로 개선 보고서",
+    title:"사용성 평가 기반 투썸하트 앱 ‘영수증 적립’ 기능\n진입 경로 개선 보고서",
     tags:["사용성 테스트","아이트래킹","UX개선"], period:"2026.03 ~ 2026.06",
     award:"", kind:"보고서 · UX 개선",
     one:"사용성 테스트와 아이트래킹으로 영수증 적립 기능의 탐색 문제를 분석하고, 사용자 기대에 맞춰 진입 경로를 개선한 프로젝트입니다.",
@@ -512,11 +555,15 @@ const P = {
     process:["영수증 적립 경험이 없는 라이트 유저 5명을 대상으로 기능 찾기 과제를 진행하고, 수행 시간·성공률·접근 경로와 시선 이동을 분석했습니다. 그 결과 마이페이지로 진입하는 단계에서 탐색 지연이 집중되었으며, 사용자들이 적립 바코드와 관련 메뉴를 반복해서 확인하는 모습을 발견했습니다.",
       "이후 폴바셋·팀홀튼·해피포인트·버거킹의 유사 기능을 비교해 접근 단계, 배치 맥락, 용어의 명확성을 중심으로 개선 방향을 정했습니다. 이를 바탕으로 홈 화면의 적립 바코드 아래에 ‘영수증으로 적립’을 추가하고, 메뉴 목록에서 ‘영수증 적립’으로 바로 연결되는 경로를 설계했습니다.",
       "페이퍼·디지털 프로토타입을 제작하고 2차 사용성 평가로 개선안을 검토했습니다. 보고서 기준 평균 수행 시간은 113.7초에서 13.4초로 약 88% 감소했으며, 최종 개선안을 화면설계서와 기존·개선 화면 비교로 구체화했습니다."],
+    // 상세 팝업 미리보기: 원본 보고서(직무역량평가2) 쪽을 이미지로 (img/shots/)
+    shots:{why:[{src:"img/shots/twosome-04.jpg"},{src:"img/shots/twosome-05.jpg"},{src:"img/shots/twosome-06.jpg"}],
+      process:[{src:"img/shots/twosome-12.jpg",cap:"사용성 테스트"},{src:"img/shots/twosome-18.jpg",cap:"아이트래킹"},
+               {src:"img/shots/twosome-28.jpg",cap:"벤치마킹"},{src:"img/shots/twosome-31.jpg",cap:"프로토타이핑"}]},
     others:["medi","nop","oreum"], cats:["nurungji","fried"]},
 
   nop:{type:"기획서", short:"NOP!", color:["#FDE3C8","#B4621D"],
-    card:"외국인 관광객 바가지 방지 앱 서비스 “NOP(놉)” 기획서",
-    title:"외국인 관광객 바가지 방지 앱 서비스 ‘NOP 놉’ 기획서",
+    card:"외국인 관광객 바가지 방지 앱 서비스\n“NOP(놉)” 기획서",
+    title:"외국인 관광객 바가지 방지 앱 서비스\n‘NOP 놉’ 기획서",
     tags:["입선","신규 기획","사용자 중심 설계"], period:"2026.03 ~ 2026.06",
     award:"제32회 커뮤니케이션디자인 국제 어워드 디지털미디어디자인 부문 ‘입선’", kind:"기획서 · 여행 서비스",
     one:"시세 비교와 스캔 기반 가격 확인으로 외국인 관광객의 합리적인 소비를 돕는 여행 지원 앱 서비스입니다.",
@@ -527,11 +574,16 @@ const P = {
     process:["관광불편신고 자료를 분석해 가격 문제를 살펴보고, 외국인 관광객의 어려움을 페르소나로 구체화했습니다. 정보 비대칭, 상점에 대한 불안, 화폐 계산과 대응 방법의 부족을 주요 문제로 정리했습니다.",
       "시세 검색, 이미지 번역, 지도, 환율 계산과 신고 등 기존 해결 방식을 비교한 뒤, 여러 도구를 오가는 부담을 줄이는 통합 서비스 방향을 설정했습니다. 가격과 상점 정보를 빠르게 이해할 수 있도록 신호등 색상의 판단 정보와 스캔 중심의 확인 방식을 제안했습니다.",
       "최종적으로 이용 과정을 상점 입장 전·입장 후·결제로 나누고, 각 단계에 필요한 핵심 기능을 배치했습니다. 시세 확인부터 상점 선택, 메뉴·영수증 확인과 거스름돈 계산까지 이어지는 흐름을 사용자 여정으로 정리했습니다."],
+    site:"https://nfuoah.github.io/nop./",   // 프로젝트 웹사이트 → '웹사이트 보기' 버튼
+    // 상세 팝업 미리보기: 원본 기획서(이백배_직무2) 쪽을 이미지로 (img/shots/)
+    shots:{why:[{src:"img/shots/nop-02.jpg"},{src:"img/shots/nop-03.jpg"},{src:"img/shots/nop-04.jpg"},{src:"img/shots/nop-05.jpg"}],
+      process:[{src:"img/shots/nop-07.jpg",cap:"벤치마킹"},{src:"img/shots/nop-08.jpg",cap:"차별점"},
+               {src:"img/shots/nop-09.jpg",cap:"핵심 기능"},{src:"img/shots/nop-10.jpg",cap:"사용 경험"}]},
     others:["oreum","hana","khidi"], cats:["nurungji","team","fresh"]},
 
   medi:{type:"기획서", short:"Medi-bridge", color:["#DDEBF0","#3F6E7E"],
     card:"안산 다문화가정 의료 도우미 앱 서비스 “Medi-bridge” 기획서",
-    title:"안산 다문화가정 의료 도우미 서비스 기획서",
+    title:"안산 다문화가정 의료 도우미 앱 서비스 기획서",
     tags:["입선","지역특화","신규 기획"], period:"2026.03 ~ 2026.06",
     award:"제32회 커뮤니케이션디자인 국제 어워드 기획 부문 ‘입선’", kind:"기획서 · 지역 특화 서비스",
     one:"언어 장벽으로 끊기는 의료 이용 과정을 병원 탐색부터 진료 후 관리까지 연결하는 다문화가정 맞춤형 앱 서비스입니다.",
@@ -542,13 +594,17 @@ const P = {
     process:["지역 현황과 의료 지원 사례를 조사하고, 다문화가정 보호자·외국인 노동자·병원 실무자의 관점에서 이용 상황을 분석했습니다. 사용자 스토리, 페르소나와 여정 맵을 통해 언어 장벽, 절차의 불명확성, 정보 접근의 어려움을 정리했습니다.",
       "이후 서울성모병원 국제진료센터 현장 관찰과 관계자 및 안산시 다문화가족지원센터 인터뷰를 통해 서비스 방향을 구체화했습니다. 의사소통뿐 아니라 언어 지원 병원 탐색, 비용 안내, 다음 절차의 가시화가 필요하다는 점을 확인했습니다.",
       "조사 내용을 바탕으로 핵심 기능 8가지를 선정하고, 카드소팅과 정보구조 설계로 기능 간 연결을 정리했습니다. 최종적으로 병원 탐색부터 문진·진료·복약까지 이어지는 이용 흐름을 시나리오와 화면설계서로 구체화했습니다."],
+    // 상세 팝업 미리보기: 원본 기획서(커뮤니케이션디자인 국제 어워드 기획부문) 쪽을 이미지로 (img/shots/)
+    shots:{why:[{src:"img/shots/medi-05.jpg"},{src:"img/shots/medi-10.jpg"},{src:"img/shots/medi-11.jpg"},{src:"img/shots/medi-12.jpg"}],
+      process:[{src:"img/shots/medi-06.jpg",cap:"서비스 방향성"},{src:"img/shots/medi-07.jpg",cap:"SWOT 분석"},
+               {src:"img/shots/medi-08.jpg",cap:"차별점"},{src:"img/shots/medi-15.jpg",cap:"사용 시나리오"}]},
     others:["nop","oreum","hana"], cats:["nurungji","team","fresh"]},
 
   oreum:{type:"기획서", short:"OREUM", color:["#E9E4F1","#5F5480"],
     card:"쉬었음청년 대상 일상회복 사회복귀 브릿지 앱 서비스 “오름 OREUM” 기획서",
     title:"고립·은둔 청년의 일상 회복과 사회참여를 돕는 앱 서비스 ‘오름 oreum’ 기획서",
     tags:["신규 기획","팀장","단계별 서비스 설계"], period:"2026.09 ~ 현재",
-    award:"", kind:"기획서 · 일상 회복 및 사회참여 지원 서비스",
+    award:"캡스톤디자인 학과 우수작 선정", kind:"기획서 · 일상 회복 및 사회참여 지원 서비스",
     one:"혼자 시작할 수 있는 작은 행동 미션을 통해 일상 회복에서 사회참여까지 단계적으로 연결하는 앱 서비스입니다.",
     people:"6명 — 배민서·백귀리·이나경·이연주·이준석·전예린", role:"팀장, 기획",
     skills:"사용자 리서치 · 문제 정의 · 단계별 서비스 설계 · 참여 동기 설계 · 정보구조 설계 · 화면설계 · UI 디자인",
@@ -557,6 +613,12 @@ const P = {
     process:["고립·은둔 청년 관련 조사와 인터뷰 자료, 기존 지원 프로그램을 분석해 일상 리듬의 약화와 초기 참여 장벽을 정리했습니다. 이후 사용자를 ‘일상 붕괴형’과 ‘외출 장벽형’으로 구분하고, 각 유형의 시작 수준과 지속 참여에 필요한 조건을 페르소나로 구체화했습니다.",
       "행동활성화 원리를 참고해 ‘숨고르기·둘러보기·마주하기·도전하기’의 네 단계 챕터를 구성했습니다. 작은 일상 행동에서 외출과 교류로 범위를 넓히도록 미션을 배치하고, 상태 확인 결과에 따라 적절한 단계부터 시작하는 구조를 설계했습니다.",
       "참여를 이어가도록 수행 인증, 연속 활동 기록, 리워드와 캐릭터 성장을 연결하고, 중단 후 다시 시도할 수 있는 복습·부활 미션을 마련했습니다. 최종적으로 정보구조와 화면설계서, 주요 UI를 제작하고 일상 회복과 지원 프로그램 연결을 확인할 평가 지표를 정리했습니다."],
+    site:"https://yeonjuulee.github.io/oreum/",   // 프로젝트 웹사이트 → '웹사이트 보기' 버튼
+    // 상세 팝업 미리보기: 기획이유 4장, 도출과정 6장 (img/shots/)
+    shots:{why:[{src:"img/shots/oreum-why-1.jpg"},{src:"img/shots/oreum-why-2.jpg"},{src:"img/shots/oreum-why-3.jpg"},{src:"img/shots/oreum-why-4.jpg"}],
+      process:[{src:"img/shots/oreum-fill-1.jpg",cap:"행동활성화 원리"},{src:"img/shots/oreum-fill-2.jpg",cap:"사용자 그룹핑"},
+               {src:"img/shots/oreum-fill-3.jpg",cap:"유형 진단 질문"},{src:"img/shots/oreum-fill-4.jpg",cap:"페르소나"},
+               {src:"img/shots/oreum-fill-5.jpg",cap:"SWOT 분석"},{src:"img/shots/oreum-fill-6.jpg",cap:"예산 확보 방안"}]},
     others:["hana","khidi","twosome"], cats:["team","fresh"]},
 
   hana:{type:"보고서", short:"HANATOUR", color:["#D9ECE9","#2F6E66"],
@@ -587,6 +649,11 @@ const P = {
     process:["제안요청서의 요구사항을 분석해 사업의 목적과 수행 범위를 정리하고, PC·모바일 홈페이지를 직접 비교했습니다. 이를 통해 주요 서비스 접근 경로의 불일치, 모바일 게시물 목록의 가로 스크롤, 표의 과도한 줄바꿈 등 정보 탐색을 방해하는 요소를 도출했습니다.",
       "이후 서비스 현황과 공개된 이용 자료를 바탕으로 주요 사용자를 5개 군으로 구분하고, 각 사용자군이 찾는 정보와 이용 목적을 정리했습니다. 한국산업기술진흥원·KOTRA·기업마당을 벤치마킹해 목적별 메뉴 구성, 핵심 정보의 우선 배치, 기기 간 일관성을 개선 방향으로 설정했습니다.",
       "분석 결과를 요구사항별 대응 방안으로 연결하고, 국문 홈페이지의 메뉴와 정보구조 및 주요 화면 개선안을 설계했습니다. 사업공고의 핵심 정보와 모바일 게시물 목록을 읽기 쉽게 구성하고, 향후 사용성 평가에서 확인할 과업 성공률·수행 시간 등의 지표와 사업관리 계획을 함께 제시했습니다."],
+    // 발표자료(아귀_발표자료) — 상세 팝업 미리보기와 '발표자료 보기' 버튼
+    deck:"files/khidi-deck.pdf",
+    shots:{why:[{src:"img/shots/khidi-04.jpg"},{src:"img/shots/khidi-05.jpg"},{src:"img/shots/khidi-06.jpg"},{src:"img/shots/khidi-07.jpg"}],
+      process:[{src:"img/shots/khidi-08.jpg",cap:"이용 목적별 메뉴"},{src:"img/shots/khidi-09.jpg",cap:"홈 화면"},
+               {src:"img/shots/khidi-11.jpg",cap:"게시물 목록"},{src:"img/shots/khidi-12.jpg",cap:"공고 상세"}]},
     others:["twosome","medi","nop"], cats:["fried"]},
 };
 
@@ -612,7 +679,7 @@ const SB = [
 ];
 SB.forEach(([id,base,kind,role,others])=>{
   const b=P[base], f=FILE_ID[base];
-  P[id]={...b, type:"스토리보드", kind, award:"", role: role===null ? b.role : role, others, cats:[],
+  P[id]={...b, type:"스토리보드", kind, award:"", role: role===null ? b.role : role, others, cats:[], deck:null, site:null, shots:null,
     cover:`img/boards/board-${f}-cover.png`,
     images:{board:Array.from({length:BOARDS[f]},(_,i)=>`img/boards/board-${f}-${i+2}.png`)},
     card:b.card.replace(/(보고서|기획서|제안서)$/,"스토리보드"),
@@ -623,11 +690,13 @@ SB.forEach(([id,base,kind,role,others])=>{
 const ORDER = ["twosome","nop","medi","oreum","hana","khidi","sb_twosome","sb_medi","sb_nop","sb_oreum","sb_khidi","sb_hana"];
 const FEATURED = ["twosome","nop","medi"];
 const CATS = [
-  {id:"all", name:"전체", desc:"모든 프로젝트", icon:"bowl"},
-  {id:"nurungji", name:"누룽지", desc:"대표 프로젝트", icon:"nurungji"},
-  {id:"team", name:"비빔밥", desc:"팀 프로젝트", icon:"bibim"},
-  {id:"fresh", name:"갓 지은 밥", desc:"신규 서비스 기획", icon:"fresh"},
-  {id:"fried", name:"볶음밥", desc:"기존 서비스 개선", icon:"fried"},
+  // img: 카테고리 아이콘 + 헤더 이미지. 파일이 아직 없으면 밥그릇(rice.png)으로 대신 보여줌
+  {id:"all", name:"전체", desc:"모든 프로젝트", img:"img/new/rice.png"},
+  // k: 헤더에서 그릇 크기를 맞추는 배율 (볶음밥은 숟가락만큼 그림이 넓어서 조금 키움)
+  {id:"nurungji", name:"누룽지", desc:"대표 프로젝트", img:"img/new/nurungji.png", k:1.2},
+  {id:"team", name:"비빔밥", desc:"팀 프로젝트", img:"img/new/bibimbap.png"},
+  {id:"fresh", name:"갓 지은 밥", desc:"신규 서비스 기획", img:"img/new/rice-fresh.png"},
+  {id:"fried", name:"볶음밥", desc:"기존 서비스 개선", img:"img/new/fried-rice.png", k:1.05},
 ];
 
 /* 이력 */
@@ -642,6 +711,7 @@ const HIST = {
     ["2025.03","계원예술대학교 디지털미디어디자인과 입학"],
     ["2025.02","개포고등학교 졸업"]]},
   award:{t:"수상내역", rows:[
+    ["2026.11","캡스톤디자인 학과 우수작 선정","쉬었음 청년 대상 일상회복 사회복귀 브릿지 앱 서비스 “오름 OREUM”"],
     ["2026.07","제32회 커뮤니케이션디자인 국제 어워드 기획 부문 ‘입선’","안산 다문화가정 의료 도우미 앱 서비스 “Medi-bridge” 기획서"],
     ["2026.07","제32회 커뮤니케이션디자인 국제 어워드 디지털미디어디자인 부문 ‘입선’","외국인 관광객 바가지 방지 앱 서비스 “NOP(놉)”"],
     ["2025.06","영상 기초 부문 연합 PT 우수작 선정","캠퍼스 속 숨은 기능 찾기 앱 서비스 캠파인더 기획 및 제작"]]},
@@ -660,7 +730,7 @@ const HIST = {
 
 /* 툴 */
 const TOOLS = [
-  {g:"설계와 프로토타이핑", items:[["Figma","기획서 제작<br>프로토타이핑","#A259FF"],["PowerPoint","기획서, 스토리보드<br>제작","#D35230"]]},
+  {g:"설계와 프로토타이핑", items:[["Figma","기획서 제작<br>프로토타이핑","#A259FF"],["PowerPoint","기획서,<br>스토리보드 제작","#D35230"]]},
   {g:"문서와 정보 정리", items:[["Excel","IA 작성<br>일정 관리","#1D6F42"],["Notion","일정 관리<br>자료 정리<br>문서 아카이빙","#2F2F2F"]]},
   {g:"AI 도구", items:[["ChatGPT","기획 구조화<br>정보 탐색·비교<br>바이브 코딩","#10A37F"],["Claude","문서 구조화<br>화면 설계 보조<br>결과 피드백","#D97757"],["Gemini","정보 탐색·비교<br>결과 피드백<br>기획 흐름 검토","#4B7BE5"]]},
 ];
@@ -679,39 +749,70 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 
 
 const TYPE_EN={"보고서":"Report","기획서":"Service plan","제안서":"Proposal","스토리보드":"Storyboard"};
+/* 프로젝트명 속 \n = 정해둔 줄바꿈 위치 (화면에는 <br>, 읽기용 라벨에는 띄어쓰기) */
+const BR=s=>s.replace(/\n/g,"<br>"), PLAIN=s=>s.replace(/\n/g," ");
 function cardHTML(id,delay){
   const p=P[id];
-  return `<button class="item ${delay===undefined?'reveal':''}" ${delay!==undefined?`style="animation-delay:${delay}s"`:''} data-open="${id}" aria-label="${p.title} 자세히 보기">
+  return `<button class="item ${delay===undefined?'reveal':''}" ${delay!==undefined?`style="animation-delay:${delay}s"`:''} data-open="${id}" aria-label="${PLAIN(p.title)} 자세히 보기">
     <div class="th">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
     <span class="cap">${p.short} <span style="color:var(--ink-3);font-size:12px">· ${TYPE_EN[p.type]}</span></span>
-    <span class="desc">${p.card}</span>
+    <span class="desc">${PLAIN(p.card)}</span>
     <span class="tags">${p.tags.map(t=>"#"+t).join("  ")}</span>
     <span class="price">— ${p.period}</span></button>`;
 }
 /* 밥 페이지용 카드 (화면설계서 레이아웃) */
 function cardHTML2(id,delay){
   const p=P[id];
-  return `<button class="card" style="animation-delay:${delay||0}s" data-open="${id}" aria-label="${p.title} 자세히 보기">
+  return `<button class="card" style="animation-delay:${delay||0}s" data-open="${id}" aria-label="${PLAIN(p.title)} 자세히 보기">
     <div class="thumb">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
-    <div class="body"><span class="tag">${p.type}</span><h3>${p.card}</h3>
-      <div class="hash">${p.tags.map(t=>"#"+t).join("  ")}</div><div class="period">${p.period}</div></div></button>`;
+    <div class="body"><span class="tag">${p.type}</span><h3>${BR(p.card)}</h3>
+      <div class="hash">${p.tags.map(t=>"#"+t).join("  ")}</div></div></button>`;
 }
 function imgBlock(src,label){
   return `<div class="ph-img ${src?"has":""}">${src?`<img src="${src}" alt="${label}" loading="lazy">`:`<span>${label}</span>`}</div>`;
 }
 
 /* 누룽지 / 밥 */
-$("#featuredCards").innerHTML = FEATURED.map(id=>cardHTML(id)).join("");
+/* 대표 프로젝트도 밥 페이지와 같은 카드 레이아웃 (이미지 / 문서유형 태그 / 제목 / 해시태그) */
+$("#featuredCards").innerHTML = FEATURED.map((id,i)=>cardHTML2(id,i*0.04)).join("");
 let curCat="all";
 function inCat(id,c){return c==="all"||P[id].cats.includes(c)}
+/* 카테고리 버튼과 카드는 한 번만 만들고, 바꿀 때는 보이기/숨기기만 함 (다시 그리면서 깜빡이지 않게) */
+const RICE="img/new/rice.png", bapHead=$("#bapHeadImg"), bapBox=$("#bapHeadBox"), bapCards=$("#bapCards");
+$("#cats").innerHTML = CATS.map(c=>{
+  const n=ORDER.filter(id=>inCat(id,c.id)).length;
+  return `<button class="cat" role="tab" data-cat="${c.id}"><span class="ci"><img src="${c.img}" alt="" onerror="this.onerror=null;this.src='${RICE}'"></span><span><b>${c.name}</b><small>${c.desc}</small></span><span class="cnt">${String(n).padStart(2,"0")}</span></button>`;
+}).join("");
+bapCards.innerHTML = ORDER.map(id=>cardHTML2(id)).join("");
+CATS.forEach(c=>{ new Image().src=c.img; });   // 헤더 이미지 미리 불러오기
+function setCatTabs(){ $$("#cats .cat").forEach(b=>{const on=b.dataset.cat===curCat; b.classList.toggle("on",on); b.setAttribute("aria-selected",on);}); }
 function renderBap(){
-  $("#cats").innerHTML = CATS.map(c=>{
-    const n=ORDER.filter(id=>inCat(id,c.id)).length;
-    return `<button class="cat ${c.id===curCat?'on':''}" role="tab" aria-selected="${c.id===curCat}" data-cat="${c.id}"><span class="ci"><img src="img/new/${c.id==="nurungji"?"nurungji":"rice"}.png" alt=""></span><span><b>${c.name}</b><small>${c.desc}</small></span><span class="cnt">${String(n).padStart(2,"0")}</span></button>`;
-  }).join("");
-  $("#bapCards").innerHTML = ORDER.filter(id=>inCat(id,curCat)).map((id,i)=>cardHTML2(id,i*0.04)).join("");
+  setCatTabs();
+  $$(".card",bapCards).forEach(el=>{ el.hidden=!inCat(el.dataset.open,curCat); });
+  setBapHead();
 }
-$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;curCat=b.dataset.cat;renderBap();});
+/* 전체 프로젝트 헤더 이미지: 고른 카테고리의 밥으로 */
+bapHead.onerror=()=>{ if(!bapHead.src.endsWith(RICE)) bapHead.src=RICE; };
+function setBapHead(){
+  const c=CATS.find(x=>x.id===curCat); if(!c || bapHead.dataset.cat===c.id) return;
+  bapHead.dataset.cat=c.id; bapHead.src=c.img; bapHead.alt=c.name; bapBox.style.setProperty("--k",c.k||1);
+}
+/* 카테고리 전환: 카드와 헤더 이미지를 짧게 흐려졌다 다시 나타나게 (번쩍임 없이) */
+let switchId=0;
+function switchCat(cat){
+  if(cat===curCat) return;
+  curCat=cat; setCatTabs();
+  const id=++switchId, els=[bapCards,bapBox];
+  els.forEach(el=>el.animate([{opacity:0}],{duration:140,easing:"ease-out",fill:"forwards"}));
+  setTimeout(async()=>{
+    if(id!==switchId) return;
+    renderBap();
+    await Promise.race([bapHead.decode().catch(()=>{}), new Promise(r=>setTimeout(r,250))]);   // 이미지 준비를 잠깐만 기다림
+    if(id!==switchId) return;
+    els.forEach(el=>{ el.getAnimations().forEach(a=>a.cancel()); el.animate([{opacity:0},{opacity:1}],{duration:260,easing:"ease-out"}); });
+  },150);
+}
+$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(b)switchCat(b.dataset.cat);});
 renderBap();
 
 /* 화면 전환 (메인 원스크롤 ↔ 밥 페이지) */
@@ -763,11 +864,12 @@ function copy(text,msg){
 const panel=$("#histPanel");
 function renderPanel(key){
   $$(".tp").forEach(b=>b.classList.toggle("on",b.dataset.h===key));
-  if(!key){panel.innerHTML=`<div class="empty fade"><p class="cap">Choose a topping</p><h4 style="margin:10px 0 0">그래놀라 속 이야기를 골라보세요</h4><p class="desc">왼쪽 토핑을 누르면 이곳에서 이력을 확인할 수 있습니다.</p></div>`;return;}
+  // 아무것도 안 눌렀을 때도 눌렀을 때와 같은 자리·스타일(제목 → 내용)로
+  if(!key){panel.innerHTML=`<div class="fade"><h4>그래놀라 속 이야기를 골라보세요</h4><p class="guide">왼쪽 토핑을 누르면 이곳에서 이력을 확인할 수 있습니다.</p></div>`;return;}
   const h=HIST[key];
-  panel.innerHTML=`<button class="close" aria-label="이력 닫기">CLOSE ✕</button>
+  panel.innerHTML=`<button class="close" aria-label="이력 닫기">닫기 ✕</button>
     <div class="fade" style="display:flex;flex-direction:column;min-height:0;flex:1">
-    <span class="lbl">ABOUT BAEK KWIRI</span><h4>${h.t}</h4>
+    <h4>${h.t}</h4>
     <div class="scroller">${h.rows.map(r=>`<dl class="hist ${h.kv?'kv':''}"><dt>${r[0]}</dt><dd>${r[1]}${r[2]?`<small>${r[2]}</small>`:""}</dd></dl>`).join("")}</div></div>`;
   panel.querySelector(".close").onclick=()=>renderPanel(null);
 }
@@ -775,9 +877,13 @@ $$(".tp").forEach(b=>b.onclick=()=>renderPanel(b.classList.contains("on")?null:b
 renderPanel(null);
 
 /* 우유 */
-$("#shelf").innerHTML = TOOLS.map(g=>`<div class="tool-group"><h3>${g.g}</h3><div class="tool-row">${g.items.map(([n,ab])=>`
+/* 그룹마다 잔 테두리(링) 색: 설계와 프로토타이핑=세이지, 문서와 정보 정리=머스터드, AI 도구=자두 */
+const RING = ["milk-full.png","milk-full-mustard.png","milk-full-plum.png"];
+/* 잔 테두리만 따로 (우유를 마셔 빈 잔이 돼도 링 색은 그대로 남게 맨 위에 겹침) */
+const RIM = ["milk-ring.png","milk-ring-mustard.png","milk-ring-plum.png"];
+$("#shelf").innerHTML = TOOLS.map((g,gi)=>`<div class="tool-group"><h3>${g.g}</h3><div class="tool-row">${g.items.map(([n,ab])=>`
   <button class="tool" aria-pressed="false" aria-label="${n} 활용 역량 보기">
-    <span class="glass"><img src="img/new/milk-empty.png" alt=""><img class="full" src="img/new/milk-full.png" alt=""><span class="ab">${ab}</span></span>
+    <span class="glass"><img src="img/new/milk-empty.png" alt=""><img class="full" src="img/new/${RING[gi]}" alt=""><img class="rim" src="img/new/${RIM[gi]}" alt=""><span class="ab">${ab}</span></span>
     <span class="cap">${n}</span><span class="price gd">눌러서 활용 역량 보기</span>
   </button>`).join("")}</div></div>`).join("");
 function setGlass(w,empty){w.classList.toggle("empty",empty);w.setAttribute("aria-pressed",empty);w.querySelector(".gd").textContent=empty?"다시 눌러 우유 채우기":"눌러서 활용 역량 보기";}
@@ -788,38 +894,41 @@ $("#drinkAll").onclick=()=>{const fill=$("#drinkAll").textContent.includes("다�
 /* 프로젝트 상세 팝업 */
 const modal=$("#modal"),dim=$("#dim"),ms=$("#mScroll");
 let modalFrom="main",lastFocus;
-function infoRow(k,v,cls=""){const e=!v;return `<dt>${k}</dt><dd class="${e?'none':cls}">${e?(k==="수상"?"등록된 정보 없음":"추후 업데이트"):v}</dd>`;}
+function infoRow(k,v,cls=""){const e=!v;
+  // 수상은 형광펜처럼 강조, 수상 정보가 없으면 '-'
+  const val = e ? (k==="수상" ? "-" : "추후 업데이트") : (cls==="award" ? `<mark>${v}</mark>` : v);
+  return `<dt>${k}</dt><dd class="${e?'none':cls}">${val}</dd>`;}
 function linkBtn(label,url,ink){return `<a class="btn" href="${url?encodeURI(url):'#'}" ${url?'target="_blank" rel="noopener"':'data-nofile'}>${label}</a>`;}
-function buttons(p){return p.type==="제안서"?`<div class="m-btns">${linkBtn("제안서 전체 보기",p.pdf,true)}</div>`:`<div class="m-btns">${linkBtn("프로젝트 전체 보기",p.pdf,true)}${linkBtn("화면설계서 전체 보기",p.boardPdf)}</div>`;}
+function buttons(p){const deck=(p.deck?linkBtn("발표자료 보기",p.deck):"")+(p.site?linkBtn("웹사이트 보기",p.site):"");
+  return p.type==="제안서"?`<div class="m-btns">${linkBtn("제안서 전체 보기",p.pdf,true)}${deck}</div>`:`<div class="m-btns">${linkBtn("프로젝트 전체 보기",p.pdf,true)}${linkBtn("화면설계서 전체 보기",p.boardPdf)}${deck}</div>`;}
 function renderModal(id){
   const p=P[id],im=p.images||{},a4=p.type==="제안서";
-  /* 등록된 이미지가 있으면 그 이미지만, 없으면 n칸 자리표시 */
-  const imgs=(arr,n,cls,lab)=>{const has=(arr||[]).filter(Boolean);
-    return has.length?`<div class="m-imgs ${has.length===1&&!a4?"c1":cls}">${has.map((s,i)=>imgBlock(s,lab(i))).join("")}</div>`
-      :`<div class="m-imgs ${cls}">${Array.from({length:n},(_,i)=>imgBlock("",lab(i))).join("")}</div>`;};
-  const pr=im.process||[];
+  /* 미리보기 이미지 칸: 블록마다 빈 칸 4개를 2×2로 (이미지는 나중에 채우기) */
+  const slots=()=>`<div class="m-imgs c2 ${a4?"a4":""}">${'<div class="ph-img"></div>'.repeat(4)}</div>`;
+  /* 미리보기 이미지가 준비된 블록은 이미지로, 아니면 빈 칸 */
+  const gallery=list=>!list||!list.length?slots():`<div class="m-imgs c2 ${list.length%2?"odd":""}">${list.map(s=>`<figure class="m-shot"><div class="frame"><img src="${s.src}" alt="${s.cap||""}" loading="lazy"></div>${s.cap?`<figcaption>${s.cap}</figcaption>`:""}</figure>`).join("")}</div>`;
+  const sh=p.shots||{};
   let body;
   if(p.type==="스토리보드"){
-    body=`<div class="m-block"><div class="m-why-h"><h3>화면으로 옮겼습니다.</h3><small>스토리보드</small></div>${imgs(im.board,6,"c2",i=>"스토리보드 "+(i+1))}</div>`;
+    body=`<div class="m-block"><div class="m-why-h"><h3>화면으로 옮겼습니다.</h3><small>스토리보드</small></div>${slots()}</div>`;
   }else{
     const [p1,p2,p3]=p.process;
     body=`<div class="m-block"><div class="m-why-h"><h3>발견한 한 알의 왜.</h3><small>프로젝트 기획이유</small></div>
-      <div class="m-text"><p>${p.why}</p></div>
-      ${a4?imgs(im.why,3,"c3 a4",i=>"제안서 "+(i+1)):imgs(im.why,4,"c2",i=>"기획 배경 "+(i+1))}</div>
+      <div class="m-text"><p>${p.why}</p></div>${gallery(sh.why)}</div>
     <div class="m-block"><div class="m-why-h"><h3>알차게 채웠습니다.</h3><small>프로젝트 도출과정</small></div>
-      <div class="m-text"><p>${p1}</p><p>${p2}</p>${a4?`<p>${p3}</p>`:""}</div>
-      ${a4?imgs(pr,3,"c3 a4",i=>"제안서 "+(i+4)):imgs(pr.slice(0,2),2,"c2",i=>"도출 과정 "+(i+1))+`<div class="m-text" style="margin-top:32px"><p>${p3}</p></div>`+(pr.length&&pr.length<=2?"":imgs(pr.slice(2,4),2,"c2",i=>"도출 과정 "+(i+3)))}</div>`;
+      <div class="m-text"><p>${p1}</p><p>${p2}</p><p>${p3}</p></div>${gallery(sh.process)}</div>`;
   }
-  ms.innerHTML=`<div class="m-head"><p class="lbl">PROJECT DETAILS</p><h2>프로젝트 자세히 보기</h2></div>
+  /* 1행: 썸네일 | 소개·버튼(버튼 아랫선 = 썸네일 아랫선), 2행: 프로젝트명·정보표(왼쪽 열) */
+  ms.innerHTML=`<div class="m-head"><p class="lbl">프로젝트 자세히 보기</p></div>
     <div class="m-row1">
       <div class="m-cover">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
       <div class="m-intro"><h5>프로젝트 소개</h5><p>${p.intro}</p>${buttons(p)}</div>
+      <div class="m-row2"><h3 class="m-title" id="mTitle">${BR(p.title)}</h3>
+        <dl class="m-info">${infoRow("수상",p.award,"award")}${infoRow("구분",p.kind)}${infoRow("한 줄 소개",p.one)}${infoRow("기간",p.period)}${infoRow("진행 인원",p.people)}${infoRow("담당 역할",p.role)}${infoRow("역량",p.skills)}</dl></div>
     </div>
-    <div class="m-row2"><h3 class="m-title" id="mTitle">${p.title}</h3>
-      <dl class="m-info">${infoRow("수상",p.award,"award")}${infoRow("구분",p.kind)}${infoRow("한 줄 소개",p.one)}${infoRow("기간",p.period)}${infoRow("진행 인원",p.people)}${infoRow("담당 역할",p.role)}${infoRow("역량",p.skills)}</dl></div>
     ${body}
     <div style="margin-top:40px">${buttons(p)}</div>
-    <div class="m-others"><h4>다른 프로젝트 둘러보기</h4><ul class="others">${p.others.map(o=>`<li><a href="#" data-switch="${o}">• ${P[o].title} →</a></li>`).join("")}</ul></div>
+    <div class="m-others"><h4>다른 프로젝트 둘러보기</h4><ul class="others">${p.others.map(o=>`<li><a href="#" data-switch="${o}">• ${PLAIN(P[o].title)} →</a></li>`).join("")}</ul></div>
     <div class="m-back"><button class="btn line" id="backBap">밥 · 전체 프로젝트로 돌아가기</button></div>`;
   ms.scrollTop=0;
   $$("[data-switch]",ms).forEach(a=>a.onclick=e=>{e.preventDefault();renderModal(a.dataset.switch);});
@@ -841,24 +950,52 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
    - 터치·키보드·스크롤바로 움직이면 섹션 경계 근처에서만 살짝 맞춰줌 */
 (()=>{
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");
-  let anim=0,idle=0,userScroll=false,dragging=false,lockUntil=0,wheelTotal=0,lastWheel=0,wheelDir=0;
+  const DUR=750;     // 휠 한 번에 섹션 이동하는 시간(ms)
+  const PAUSE=180;   // 휠이 이만큼 멈췄다가 다시 굴러야 '새 입력'으로 봄 (한 번 굴린 휠이 여러 섹션을 넘기지 않게)
+  let anim=0,idle=0,userScroll=false,dragging=false,wheelTotal=0,lastWheel=0,wheelDir=0,queued=0,fresh=true,animT0=0,animDur=1;
   const active=()=>view==="main"&&!modal.classList.contains("open")&&!reduced.matches;
   const sections=()=>$$("#main-view > section");
   const topOf=el=>el.getBoundingClientRect().top+scrollY-$("#gnb").offsetHeight;
   const maxY=()=>document.documentElement.scrollHeight-innerHeight;
-  function cancel(){clearTimeout(idle);cancelAnimationFrame(anim);anim=0;}
+  function cancel(){clearTimeout(idle);cancelAnimationFrame(anim);anim=0;queued=0;}
   function slideTo(target,duration){
     cancel();userScroll=false;target=Math.max(0,Math.min(maxY(),target));
     const from=scrollY,dist=target-from;if(Math.abs(dist)<2)return;
-    const t0=performance.now();lockUntil=t0+duration+180;
+    const t0=performance.now();fresh=false;animT0=t0;animDur=duration;
     const tick=now=>{const p=Math.min(1,(now-t0)/duration),e=p*p*p*(p*(p*6-15)+10);
-      window.scrollTo({top:from+dist*e,behavior:"instant"});anim=p<1?requestAnimationFrame(tick):0;};
+      window.scrollTo({top:from+dist*e,behavior:"instant"});
+      if(p<1){anim=requestAnimationFrame(tick);return;}
+      anim=0;
+      // 이동 중에 휠을 한 번 더 굴렀으면 끝나자마자 바로 다음 섹션으로
+      if(queued){const q=queued;queued=0;const t=targetFor(q);if(t!=null)slideTo(t,duration);}
+    };
     anim=requestAnimationFrame(tick);
   }
   function wheel(e){
     if(!active()||e.ctrlKey||e.target.closest?.(".scroller,.modal,input,textarea"))return;
     if(!e.deltaY||Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
-    const now=performance.now(),dir=Math.sign(e.deltaY),vp=innerHeight-$("#gnb").offsetHeight;
+    const now=performance.now(),dir=Math.sign(e.deltaY),gap=now-lastWheel;
+    const d=Math.abs(e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1));
+    lastWheel=now;
+    const newGesture=gap>=PAUSE||dir!==wheelDir;   // 잠깐 멈췄다 다시 굴림 / 방향 바꿈
+    if(anim){
+      if(targetFor(dir)==null)return;
+      e.preventDefault();
+      // 이동이 거의 끝나갈 때(65% 이후) 새로 굴린 휠만 다음 이동으로 예약
+      if(newGesture&&(now-animT0)/animDur>.65){queued=dir;wheelDir=dir;}
+      return;
+    }
+    const target=targetFor(dir);if(target==null)return;
+    e.preventDefault();
+    // 같은 휠 동작이 이어지는 중(트랙패드 관성, 연달아 구른 휠)이면 무시
+    if(!fresh&&!newGesture)return;
+    fresh=true;
+    if(newGesture)wheelTotal=0;
+    wheelDir=dir;wheelTotal+=d;
+    if(wheelTotal>=50){wheelTotal=0;slideTo(target,DUR);}
+  }
+  function targetFor(dir){
+    const vp=innerHeight-$("#gnb").offsetHeight;
     const pos=sections().map(el=>({top:Math.max(0,topOf(el)),bottom:topOf(el)+el.offsetHeight}));
     const i=pos.reduce((f,p,k)=>p.top<=scrollY+4?k:f,0),cur=pos[i],bottom=Math.max(cur.top,cur.bottom-vp);
     // 남은 양이 화면의 35% 미만이면 잘게 끊지 않고 바로 다음/이전 섹션으로
@@ -868,27 +1005,21 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
       if(bottom-scrollY>small)target=Math.min(bottom,scrollY+vp*.8);
       else if(i<pos.length-1)target=pos[i+1].top;
       else if(scrollY<maxY()-2)target=maxY();   // 마지막 섹션 → 푸터까지
-      else return;
+      else return null;
     }else{
       if(scrollY-cur.top>small)target=Math.max(cur.top,scrollY-vp*.8);
       else if(scrollY>cur.top+5)target=cur.top;
       else if(i>0){const p=pos[i-1],end=p.bottom-vp;target=end-p.top>small?Math.max(p.top,end):p.top;}
-      else return;
+      else return null;
     }
-    e.preventDefault();
-    if(anim||now<lockUntil){lastWheel=now;return;}
-    // 트랙패드 관성은 이전 이동이 끝날 때까지 무시
-    if(now-lastWheel>160||dir!==wheelDir)wheelTotal=0;
-    wheelDir=dir;lastWheel=now;
-    wheelTotal+=Math.abs(e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1));
-    if(wheelTotal>=22){wheelTotal=0;slideTo(target,1000);}
+    return target;
   }
   function settle(){
     if(!userScroll||dragging||anim||!active())return;
     userScroll=false;
     const pts=sections().map(el=>Math.max(0,Math.min(maxY(),topOf(el))));
     const target=pts.sort((a,b)=>Math.abs(a-scrollY)-Math.abs(b-scrollY))[0],d=Math.abs(target-scrollY);
-    if(d>=3&&d<=Math.min(220,innerHeight*.25))slideTo(target,800);   // 경계 근처에서만 보정
+    if(d>=3&&d<=Math.min(220,innerHeight*.25))slideTo(target,600);   // 경계 근처에서만 보정
   }
   const input=()=>{cancel();userScroll=true;};
   addEventListener("wheel",wheel,{passive:false});
@@ -898,6 +1029,68 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
   addEventListener("pointerup",()=>{dragging=false;},{passive:true});
   addEventListener("scroll",()=>{if(anim||!userScroll)return;clearTimeout(idle);idle=setTimeout(settle,240);},{passive:true});
   addEventListener("resize",cancel,{passive:true});
+})();
+
+/* 귀리 한 알 데굴데굴
+   - 히어로 그림의 귀리 한 알이 스크롤을 따라 굴러가서 각 섹션 그림 속 한 자리에 쏙 들어감
+   - 섹션 사이를 지나는 동안은 화면에 떠서 따라오며 통통 튀고 데굴데굴 구름
+   - 동작 줄이기 설정 / 좁은 화면에서는 꺼지고 히어로는 원래 그림(귀리 네 알)으로 */
+(()=>{
+  const grain=$("#oatGo"), heroImg=$(".hero-graphic img");
+  const HERO_FULL="img/new/hero-grains.png", HERO_3="img/new/hero-grains-3.png";
+  const ratio=()=>grain.naturalWidth?grain.naturalHeight/grain.naturalWidth:140/344;   // 귀리 그림 세로/가로 (그림을 바꿔도 맞게)
+  // 멈추는 자리: 섹션 · 기준 그림 · 그림 안 위치(가로/세로 비율) · 크기(그림 너비 대비) · 기울기(도)
+  const STOPS=[
+    {sec:"#top",      el:".hero-graphic img", x:.7393, y:.8377, w:.4929, r:-14},
+    {sec:"#nurungji", el:".sec-head .obj",    x:.30, y:.20,   w:.22,   r:-12},
+    {sec:"#granola",  el:".sec-head .obj",    x:.62, y:.30,   w:.16,   r:22},
+    {sec:"#bread",    el:".sec-head .obj",    x:.43, y:.86,   w:.13,   r:-6},
+    // 우유: 우유팩 그림이 있으면 앞면 초록 물방울 안에 비스듬히, 없으면 첫 번째 잔 위로
+    {sec:"#milk", alts:[{el:"#milkCarton", x:.321, y:.688, w:.215, r:48}, {el:".tool .glass", x:.50, y:.16, w:.50, r:-8}]},
+    // 쿠키: 두 번째(전화번호) 쿠키 위에 올라감
+    {sec:"#cookie",   el:".ck:nth-of-type(2) .bite", x:.42, y:.60, w:.22, r:34},
+  ];
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)"), wide=matchMedia("(min-width:1001px)");
+  // 문서 기준 위치 (등장 애니메이션 transform은 무시)
+  const docBox=el=>{let x=0,y=0;for(let e=el;e;e=e.offsetParent){x+=e.offsetLeft;y+=e.offsetTop;}return {x,y,w:el.offsetWidth,h:el.offsetHeight};};
+  function stops(){
+    const g=$("#gnb").offsetHeight;
+    return STOPS.map(s0=>{const sec=$(s0.sec);if(!sec)return null;
+      // 후보 중 화면에 실제로 보이는 첫 그림을 기준으로
+      let s=null,el=null;for(const c of (s0.alts||[s0])){const e=$(c.el,sec);if(e&&e.offsetWidth&&e.offsetHeight){s=c;el=e;break;}}
+      if(!el)return null;
+      const b=docBox(el);return {scroll:Math.max(0,docBox(sec).y-g),x:b.x+b.w*s.x,y:b.y+b.h*s.y,w:b.w*s.w,r:s.r};}).filter(Boolean);
+  }
+  let on=false,raf=0;
+  function update(){
+    raf=0;
+    const want=view==="main"&&!reduced.matches&&wide.matches;
+    if(want!==on){on=want;grain.classList.toggle("on",on);heroImg.src=on?HERO_3:HERO_FULL;}
+    if(!on)return;
+    const st=stops();if(!st.length)return;
+    const y=scrollY;let i=0;while(i<st.length-1&&y>=st[i+1].scroll)i++;
+    const a=st[i];let cx,cy,w,r;
+    if(i===st.length-1||y<=a.scroll){cx=a.x;cy=a.y-y;w=a.w;r=a.r;}   // 자리에 앉아 그림과 함께 스크롤
+    else{
+      const b=st[i+1],t=(y-a.scroll)/(b.scroll-a.scroll),e=t*t*(3-2*t);
+      const ax=a.x,ay=a.y-a.scroll,bx=b.x,by=b.y-b.scroll,dist=Math.hypot(bx-ax,by-ay);
+      const hop=Math.min(160,dist*.3)*Math.sin(Math.PI*e);              // 통통 튀는 포물선
+      const turns=Math.max(1,Math.round(dist/420)),dir=bx>=ax?1:-1;       // 가는 방향으로 데굴데굴
+      cx=ax+(bx-ax)*e;cy=ay+(by-ay)*e-hop;w=a.w+(b.w-a.w)*e;
+      r=a.r+(b.r-a.r)*e+dir*360*turns*e;
+    }
+    grain.style.width=w+"px";
+    grain.style.transform=`translate(${cx-w/2}px,${cy-w*ratio()/2}px) rotate(${r}deg)`;
+  }
+  let rafAt=0;
+  const req=()=>{const now=performance.now();if(!raf||now-rafAt>120){raf=requestAnimationFrame(update);rafAt=now;}};
+  addEventListener("scroll",req,{passive:true});
+  addEventListener("resize",req,{passive:true});
+  addEventListener("load",()=>update());
+  [heroImg,grain,...$$(".sec-head .obj,.tool .glass img,.ck .bite img")].forEach(im=>{im.addEventListener("load",req);im.addEventListener("error",()=>setTimeout(req,0));});
+  reduced.addEventListener?.("change",req);wide.addEventListener?.("change",req);
+  const baseSetView=setView;setView=v=>{baseSetView(v);req();};
+  update();
 })();
 </script>
 </body>
