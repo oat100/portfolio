@@ -218,7 +218,7 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;width:min(100%,760px);margin-left:auto;margin-right:auto}
 .ck{cursor:pointer;display:block;width:100%;text-align:center}
 /* 쿠키: 누르면 한 입 베어 문 쿠키로 바뀜 */
-.ck .bite{position:relative;display:block;width:clamp(146px,20vh,202px);aspect-ratio:1;margin:0 auto 28px;transition:transform .6s var(--ease)}
+.ck .bite{position:relative;display:block;width:clamp(154px,21vh,213px);aspect-ratio:1;margin:0 auto 28px;transition:transform .6s var(--ease)}
 .ck .bite img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .15s}
 .ck .bite .after,.ck.bitten .bite .before{opacity:0}
 .ck.bitten .bite .after{opacity:1}
@@ -339,6 +339,8 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 /* 수상: 연한 머스터드(예전 형광펜 색) 배경 + 테두리의 둥근 배지 */
 .m-info dd.award{color:var(--ink)}
 .m-info dd.award mark{display:inline-block;line-height:20px;padding:2px 11px;border-radius:6px;background:rgba(221,178,74,.28);border:1px solid rgba(221,178,74,.75);color:var(--ink);font-weight:700}
+/* 수상 배지 앞 메달 아이콘 */
+.m-info dd.award .award-ico{display:inline-block;height:18px;width:auto;vertical-align:-4px;margin-right:6px}
 .m-block{margin-top:60px;padding-top:44px;border-top:1px solid var(--line)}
 .m-why-h{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
 .m-why-h h3{font-size:28px;font-weight:700;letter-spacing:-.03em}
@@ -812,7 +814,7 @@ const HIST = {
   campus:{t:"교내활동", rows:[
     ["2026.09 ~ 현재","디지털미디어디자인과 졸업준비위원회 전시팀","전시팀 팀원 / 물품 관리 담당"],
     ["2026.09 ~ 현재","디지털미디어디자인과 멘토링프로그램 멘토","학과 전공지식 및 툴 멘토링"],
-    ["2026.09 ~ 현재","캡스톤 디자인 팀 프로젝트 팀장","기획 및 총괄 PM<br>[프로젝트명 : 쉬었음 청년 대상 사회활동 복귀 브릿지 앱 서비스 “RESTEP”]"],
+    ["2026.09 ~ 현재","캡스톤 디자인 팀 프로젝트 팀장","기획 및 총괄 PM<br>[프로젝트명 : 쉬었음 청년 대상 사회활동 복귀 브릿지 앱 서비스 “오름 OREUM”]"],
     ["2026.03 ~ 현재","프로젝트프로포절 팀 프로젝트 팀장","요구사항 분석 / 제안 방향 수립 / 제안서 구조화<br>[프로젝트명 : KHIDI 대표홈페이지 UI/UX 개편 사업 제안서]"],
     ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 운영팀","동아리 운영 참여"],
     ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 카드뉴스팀 기획부원","학과 홍보 및 소개 카드뉴스 기획 및 제작"],
@@ -1071,7 +1073,7 @@ const TOOL_LOGO = {Figma:"figma.png", ChatGPT:"chatgpt.png", Notion:"notion.svg"
 const toolChips=list=>(list||[]).filter(n=>TOOL_LOGO[n]).map(n=>`<img class="tool-logo" src="img/tools/${TOOL_LOGO[n]}" alt="${n}" title="${n}">`).join("");
 function infoRow(k,v,cls=""){const e=!v;
   // 수상은 형광펜처럼 강조, 수상 정보가 없으면 '-'
-  const val = e ? (k==="수상" ? "-" : "추후 업데이트") : (cls==="award" ? `<mark>${v}</mark>` : v);
+  const val = e ? (k==="수상" ? "-" : "추후 업데이트") : (cls==="award" ? `<mark><img class="award-ico" src="img/new/award.png" alt="">${v}</mark>` : v);
   return `<dt>${k}</dt><dd class="${e?'none':cls}">${val}</dd>`;}
 function linkBtn(label,url,ink){return `<a class="btn" href="${url?encodeURI(url):'#'}" ${url?'target="_blank" rel="noopener"':'data-nofile'}>${label}</a>`;}
 function buttons(p){const deck=(p.deck?linkBtn("발표자료 보기",p.deck):"")+(p.site?linkBtn("웹사이트 보기",p.site):"");
