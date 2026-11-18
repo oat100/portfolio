@@ -218,9 +218,11 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .cookies{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;width:min(100%,760px);margin-left:auto;margin-right:auto}
 .ck{cursor:pointer;display:block;width:100%;text-align:center}
 /* 쿠키: 누르면 한 입 베어 문 쿠키로 바뀜 */
-.ck .bite{position:relative;display:block;width:clamp(154px,21vh,213px);aspect-ratio:1;margin:0 auto 28px;transition:transform .6s var(--ease)}
+.ck .bite{position:relative;display:block;width:clamp(162px,22vh,224px);aspect-ratio:1;margin:0 auto 28px;transition:transform .6s var(--ease)}
 .ck .bite img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .15s}
 .ck .bite .after,.ck.bitten .bite .before{opacity:0}
+/* 연달아 누를 때 더 깨문 자국: 베어 문 쿠키 그림에 원 모양 구멍(마스크)을 겹쳐서 냄 */
+.ck .bite .after{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-composite:source-in;mask-composite:intersect}
 .ck.bitten .bite .after{opacity:1}
 .ck:hover .bite{transform:translateY(-8px)}
 .ck.bitten .bite{animation:nibble .25s ease-out}
@@ -1024,10 +1026,25 @@ setTimeout(()=>{
   $$("#main-view > section.sec").forEach(s=>secIO.observe(s));
 },0);
 
-/* 쿠키 한 입: 잠깐 베어 문 쿠키를 보여주고 다시 원래 쿠키로 */
 const biteT=new WeakMap();
-function bite(ck){clearTimeout(biteT.get(ck));ck.classList.remove("bitten");void ck.offsetWidth;ck.classList.add("bitten");
-  biteT.set(ck,setTimeout(()=>ck.classList.remove("bitten"),1600));}
+/* 쿠키 한 입: 누르면 베어 문 쿠키, 연달아 누르면 최대 세 번까지 깨문 자국이 더 생김.
+   잠시(1.6초) 그대로 두면 다시 온전한 쿠키로 */
+const EXTRA_BITES=[160,55,235];   // 추가로 깨무는 자리 (쿠키 중심 기준 각도, 0=오른쪽·90=아래)
+const BITE_SHAPE=[[-11,41,10],[0,39,11],[11,41,10]];   // 한 입 = 원 3개 [각도 차, 중심에서 거리 %, 반지름 %]
+function biteMask(n){
+  const layers=[];
+  EXTRA_BITES.slice(0,n).forEach(a=>BITE_SHAPE.forEach(([da,d,r])=>{const t=(a+da)*Math.PI/180;
+    layers.push(`radial-gradient(${r}% ${r}% at ${(50+d*Math.cos(t)).toFixed(1)}% ${(50+d*Math.sin(t)).toFixed(1)}%, transparent 97%, #000 100%)`);}));
+  return layers.length?layers.join(","):"none";
+}
+function bite(ck){
+  clearTimeout(biteT.get(ck));
+  const n=ck.classList.contains("bitten")?Math.min(EXTRA_BITES.length,(+ck.dataset.bites||0)+1):0;
+  ck.dataset.bites=n;
+  const after=ck.querySelector(".bite .after"), m=biteMask(n);
+  after.style.webkitMaskImage=m; after.style.maskImage=m;
+  ck.classList.remove("bitten");void ck.offsetWidth;ck.classList.add("bitten");
+  biteT.set(ck,setTimeout(()=>{ck.classList.remove("bitten");ck.dataset.bites=0;},1600));}
 
 let tT;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>t.classList.remove("show"),1800);}
