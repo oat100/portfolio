@@ -607,6 +607,8 @@ const P = {
     shots:{why:[{src:"img/shots/twosome-04.jpg"},{src:"img/shots/twosome-05.jpg"},{src:"img/shots/twosome-06.jpg"}],
       process:[{src:"img/shots/twosome-12.jpg",cap:"사용성 테스트"},{src:"img/shots/twosome-18.jpg",cap:"아이트래킹"},
                {src:"img/shots/twosome-28.jpg",cap:"벤치마킹"},{src:"img/shots/twosome-31.jpg",cap:"프로토타이핑"}]},
+    // 프로젝트 후기 → 상세 팝업 '귀하고 이로운 경험'
+    review:"이번 프로젝트를 통해 기획자의 생각과 실제 사용자의 행동에는 차이가 있을 수 있다는 것을 배웠습니다. 사용성 테스트와 아이트래킹을 진행하며 막연하게 느꼈던 불편함을 객관적인 근거로 설명하고, 이를 구체적인 개선안으로 발전시키는 경험을 할 수 있었습니다. 특히 개선 전후의 사용성을 비교하면서 작은 구조적 변화만으로도 사용자 경험이 크게 달라질 수 있다는 점이 인상 깊었습니다. 이를 계기로 문제를 발견하는 것뿐만 아니라, 해결책의 효과까지 검증할 수 있는 기획의 중요성을 배웠습니다.",
     others:["medi","nop","oreum"], cats:["nurungji","fried"]},
 
   nop:{type:"기획서", short:"NOP!", color:["#FDE3C8","#B4621D"],
@@ -646,6 +648,7 @@ const P = {
     shots:{why:[{src:"img/shots/medi-05.jpg"},{src:"img/shots/medi-10.jpg"},{src:"img/shots/medi-11.jpg"},{src:"img/shots/medi-12.jpg"}],
       process:[{src:"img/shots/medi-06.jpg",cap:"서비스 방향성"},{src:"img/shots/medi-07.jpg",cap:"SWOT 분석"},
                {src:"img/shots/medi-08.jpg",cap:"차별점"},{src:"img/shots/medi-15.jpg",cap:"사용 시나리오"}]},
+    review:"Medi-bridge를 기획하며 자료 조사만으로는 파악하기 어려운 사용자의 문제들이 있다는 것을 배웠습니다. 직접 의료 현장을 방문하고 관계자 인터뷰를 진행하면서, 처음에는 언어 장벽에 집중했던 시야를 의료 이용 과정 전반으로 넓힐 수 있었습니다. 또한 사용자와 현장 실무자의 관점을 함께 고려하며 여러 요구를 하나의 서비스 경험으로 연결하는 역량을 기를 수 있었습니다. 이를 통해 제가 생각하는 문제보다 사용자가 실제로 겪는 문제를 먼저 이해하는 것이 좋은 서비스 기획의 출발점임을 깨달았습니다.",
     others:["nop","oreum","hana"], cats:["nurungji","team","fresh"]},
 
   oreum:{type:"기획서", short:"OREUM", color:["#E9E4F1","#5F5480"],
@@ -667,6 +670,7 @@ const P = {
       process:[{src:"img/shots/oreum-fill-1.jpg",cap:"행동활성화 원리"},{src:"img/shots/oreum-fill-2.jpg",cap:"사용자 그룹핑"},
                {src:"img/shots/oreum-fill-3.jpg",cap:"유형 진단 질문"},{src:"img/shots/oreum-fill-4.jpg",cap:"페르소나"},
                {src:"img/shots/oreum-fill-5.jpg",cap:"SWOT 분석"},{src:"img/shots/oreum-fill-6.jpg",cap:"예산 확보 방안"}]},
+    review:"오름을 기획하며 사용자에게 필요한 것과 사용자가 실제로 할 수 있는 것은 다를 수 있다는 점을 배웠습니다. 사용자의 상황과 심리적 부담을 고려해 서비스의 시작점부터 지속적인 참여까지 설계하며, 기능을 넘어 사용자의 행동 변화를 고민할 수 있었습니다. 또한 6인 팀의 팀장으로서 서로 다른 전공의 의견을 조율하고 프로젝트의 방향성을 유지하는 경험을 했습니다. 이 과정에서 좋은 기획은 혼자 완성하는 것이 아니라, 구성원들이 같은 목표를 바라보며 각자의 역량을 발휘할 수 있도록 만드는 것임을 배웠습니다.",
     others:["hana","khidi","twosome"], cats:["nurungji","team","fresh"]},
 
   hana:{type:"보고서", short:"HANATOUR", color:["#D9ECE9","#2F6E66"],
@@ -758,7 +762,7 @@ const SB = [
 ];
 SB.forEach(([id,base,kind,role,others])=>{
   const b=P[base], f=FILE_ID[base];
-  P[id]={...b, type:"스토리보드", kind, award:"", role: role || b.role,   /* 담당 역할: 따로 적지 않으면 해당 프로젝트와 같게 */ others, cats:[], deck:null, site:null, shots:null,
+  P[id]={...b, type:"스토리보드", kind, award:"", role: role || b.role,   /* 담당 역할: 따로 적지 않으면 해당 프로젝트와 같게 */ others, cats:[], deck:null, site:null, shots:null, review:null,
     cover:`img/boards/board-${f}-cover.png`,
     images:{board:Array.from({length:BOARDS[f]},(_,i)=>`img/boards/board-${f}-${i+2}.png`)},
     card:b.card.replace(/(보고서|기획서|제안서)$/,"스토리보드"),
@@ -777,7 +781,7 @@ const SB_SHOTS={
 };
 Object.entries(SB_SHOTS).forEach(([id,list])=>{P[id].shots={board:list.map(n=>({src:`img/shots/${n}.jpg`}))};});
 
-const ORDER = ["twosome","nop","medi","oreum","hana","khidi","sb_twosome","sb_medi","sb_nop","sb_oreum","sb_hana"];
+const ORDER = ["twosome","oreum","medi","nop","hana","khidi","sb_twosome","sb_medi","sb_nop","sb_oreum","sb_hana"];
 const FEATURED = ["twosome","oreum","medi"];   // 메인 '밥' 섹션 대표 프로젝트 3개 (전체 프로젝트의 '누룽지' 카테고리와 같게)
 const CATS = [
   // img: 카테고리 아이콘 + 헤더 이미지. 파일이 아직 없으면 밥그릇(rice.png)으로 대신 보여줌
@@ -1090,7 +1094,10 @@ function renderModal(id){
     body=`<div class="m-block"><div class="m-why-h"><h3>발견한 한 알의 왜.</h3><small>프로젝트 기획이유</small></div>
       <div class="m-text"><p>${p.why}</p></div>${gallery(sh.why)}</div>
     <div class="m-block"><div class="m-why-h"><h3>알차게 채웠습니다.</h3><small>프로젝트 도출과정</small></div>
-      <div class="m-text"><p>${p1}</p><p>${p2}</p><p>${p3}</p></div>${gallery(sh.process)}</div>`;
+      <div class="m-text"><p>${p1}</p><p>${p2}</p><p>${p3}</p></div>${gallery(sh.process)}</div>`
+      // 프로젝트 후기 (작성한 프로젝트만)
+      +(p.review?`<div class="m-block"><div class="m-why-h"><h3>귀하고 이로운 경험</h3><small>프로젝트 후기</small></div>
+      <div class="m-text"><p>${p.review}</p></div></div>`:"");
   }
   /* 1행: 썸네일 | 소개·버튼(버튼 아랫선 = 썸네일 아랫선), 2행: 프로젝트명·정보표(왼쪽 열) */
   ms.innerHTML=`<div class="m-head"><p class="lbl">프로젝트 자세히 보기</p></div>
