@@ -320,7 +320,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .m-cover img{width:100%;height:100%;object-fit:cover}   /* 칸이 조금 높아지면 위아래 여백 대신 꽉 채움 */
 .m-cover span{font-family:var(--en);font-weight:700;font-size:30px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3);text-align:center}
 .m-intro h5{font-size:16px;font-weight:700;margin-bottom:10px}
-.m-intro p{font-size:14px;font-weight:300;line-height:1.8;color:var(--ink-2)}
+.m-intro p{font-size:14px;font-weight:300;line-height:1.8;color:var(--ink-2);text-align:justify;text-justify:inter-word;word-break:keep-all}   /* 프로젝트 소개: 양 끝 맞춤 */
 .m-btns{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
 .m-btns .btn{height:42px;font-size:13px;padding:0 20px}
 /* 버튼이 3개면 한 줄에 들어가도록 조금 좁게 */
@@ -812,7 +812,7 @@ const HIST = {
   campus:{t:"교내활동", rows:[
     ["2026.09 ~ 현재","디지털미디어디자인과 졸업준비위원회 전시팀","전시팀 팀원 / 물품 관리 담당"],
     ["2026.09 ~ 현재","디지털미디어디자인과 멘토링프로그램 멘토","학과 전공지식 및 툴 멘토링"],
-    ["2026.09 ~ 현재","캡스톤 디자인 팀 프로젝트 팀장","기획 담당 및 프로젝트 전체 관리<br>(프로젝트 방향 설정 / 전공 간 협업 조율 / 일정 관리 등)<br>[프로젝트명 : 쉬었음 청년 대상 사회활동 복귀 브릿지 앱 서비스 “RESTEP”]"],
+    ["2026.09 ~ 현재","캡스톤 디자인 팀 프로젝트 팀장","기획 및 총괄 PM<br>[프로젝트명 : 쉬었음 청년 대상 사회활동 복귀 브릿지 앱 서비스 “RESTEP”]"],
     ["2026.03 ~ 현재","프로젝트프로포절 팀 프로젝트 팀장","요구사항 분석 / 제안 방향 수립 / 제안서 구조화<br>[프로젝트명 : KHIDI 대표홈페이지 UI/UX 개편 사업 제안서]"],
     ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 운영팀","동아리 운영 참여"],
     ["2026.01 ~ 현재","디지털미디어디자인과 기획 동아리 [초안] 카드뉴스팀 기획부원","학과 홍보 및 소개 카드뉴스 기획 및 제작"],
@@ -941,6 +941,7 @@ let switchId=0;
 function switchCat(cat){
   if(cat===curCat) return;
   curCat=cat; setCatTabs();
+  window.scrollTo({top:0,behavior:"smooth"});   // 카테고리를 바꾸면 페이지 맨 위로
   const id=++switchId, els=[bapCards,bapBox];
   els.forEach(el=>el.animate([{opacity:0}],{duration:140,easing:"ease-out",fill:"forwards"}));
   setTimeout(async()=>{
