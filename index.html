@@ -1174,8 +1174,10 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
   const reduced=matchMedia("(prefers-reduced-motion: reduce)");
   const DUR=750;     // 휠 한 번에 섹션 이동하는 시간(ms)
   const PAUSE=120;   // 휠이 이만큼 멈췄다가 다시 구르면 '새 입력'
-  const COOL=350;    // 도착 후 이만큼 지나면, 계속 굴리고 있는 휠(줄어들지 않는 값)도 다음 입력으로 받음
-  let anim=0,idle=0,userScroll=false,dragging=false,wheelTotal=0,lastWheel=0,wheelDir=0,queued=0,animT0=0,animDur=1,arrivedAt=0;
+  const COOL=350;    // 도착 후 이만큼 지나면, 마우스 휠을 계속 굴리는 중이어도 다음 입력으로 받음
+  const NOTCH=50;    // 한 번에 이만큼 이상 굴러오면 마우스 휠 '딸깍' (트랙패드는 이보다 잘게 들어옴)
+  // gestureUsed: 지금 이어지는 손짓으로 이미 한 번 이동했으면 true → 손을 떼거나(멈춤) 새로 쓸기 전까지 추가 이동 없음
+  let anim=0,idle=0,userScroll=false,dragging=false,wheelTotal=0,lastWheel=0,wheelDir=0,queued=0,animT0=0,animDur=1,arrivedAt=0,gestureUsed=false;
   const hist=[];   // 최근 휠 세기 기록 [시각, 세기] — 트랙패드 관성(점점 약해짐)과 새 손짓(다시 세짐)을 구분
   const active=()=>view==="main"&&!modal.classList.contains("open")&&!reduced.matches;
   const sections=()=>$$("#main-view > section");
@@ -1210,26 +1212,32 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
     const d=Math.abs(e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1));
     // 최근 기록으로 '다시 세지는지(새 손짓)' / '점점 약해지는지(관성)' 판단
     while(hist.length&&now-hist[0][0]>400)hist.shift();
-    const prev=hist.slice(-6).map(h=>h[1]),avg=prev.length?prev.reduce((a,b)=>a+b,0)/prev.length:0;
-    const rising=prev.length>=2&&d>avg*1.4&&d>8;   // 관성 도중 새로 쓸어 올림
-    const fading=prev.length>=2&&d<avg*.85;        // 관성으로 약해지는 중
+    const prev=hist.slice(-6).map(h=>h[1]),low=prev.length?Math.min(...prev):0;
+    // 관성(약해지는 중) 도중 손가락으로 확실하게 새로 쓸어 올림 — 방금 전 가장 약했던 값보다 2.5배 넘게 세짐
+    // (서서히 약해지는 관성, 손가락을 대고만 있을 때의 미세한 흔들림은 제외)
+    const rising=prev.length>=3&&d>low*2.5&&d>20;
     hist.push([now,d]);lastWheel=now;
-    const newGesture=gap>=PAUSE||dir!==wheelDir||rising;
+    // 이미 이동한 손짓 뒤에는 더 길게(0.28초) 쉬어야 새 입력 — 화면이 버벅여 관성 신호가 늦게 도착해도 한 번 더 넘어가지 않게
+    const newGesture=gap>=(gestureUsed?280:PAUSE)||dir!==wheelDir||rising;
+    wheelDir=dir;
     if(anim){
       if(targetFor(dir)==null)return;
       e.preventDefault();
-      // 이동 중 새로 굴린 휠은 40% 이후면 다음 이동으로 예약
-      if(newGesture&&(now-animT0)/animDur>.4){queued=dir;wheelDir=dir;}
+      // 이동 중 새로 굴린 휠은 40% 이후면 다음 이동으로 예약 (그 전이면 같은 손짓으로 보고 무시)
+      if(newGesture&&(now-animT0)/animDur>.4){queued=dir;gestureUsed=true;wheelTotal=0;}
       return;
     }
+    if(newGesture){wheelTotal=0;gestureUsed=false;}
     const target=targetFor(dir);if(target==null)return;
     e.preventDefault();
-    // 새 입력이거나, 도착 후 잠시 지났는데 휠을 계속 (약해지지 않게) 굴리는 중이면 이동
-    const keepRolling=now-arrivedAt>COOL&&!fading&&d>=4;
-    if(!newGesture&&!keepRolling)return;
-    if(newGesture)wheelTotal=0;
-    wheelDir=dir;wheelTotal+=d;
-    if(wheelTotal>=40){wheelTotal=0;slideTo(target,DUR);}
+    if(gestureUsed){
+      // 같은 손짓의 나머지(트랙패드 관성, 대고 있는 손가락)는 무시.
+      // 마우스 휠을 쉬지 않고 계속 굴리는 경우만, 도착 후 잠시 지나면 다음 이동으로 받아줌
+      if(d>=NOTCH&&now-arrivedAt>COOL){gestureUsed=false;wheelTotal=0;}
+      else return;
+    }
+    wheelTotal+=d;
+    if(wheelTotal>=40){wheelTotal=0;gestureUsed=true;slideTo(target,DUR);}
   }
   function targetFor(dir){
     const vp=innerHeight-$("#gnb").offsetHeight;
