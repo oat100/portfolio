@@ -28,7 +28,7 @@
   --mono:"Pretendard","Pretendard Variable",-apple-system,"Apple SD Gothic Neo",sans-serif;
   --ko-display:"Black Han Sans","Pretendard",sans-serif;
   --sans:"Pretendard","Pretendard Variable",-apple-system,"Apple SD Gothic Neo",sans-serif;
-  --gnb:72px;
+  --gnb:84px;
   --ease:cubic-bezier(.22,.8,.24,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -90,11 +90,11 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 .gnb .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
 /* BI: 귀리 한 알 */
 .bi{display:flex;align-items:center}
-.bi img{height:38px;width:auto}
-.menu{display:flex;gap:30px;align-self:stretch}
-.menu a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);transition:color .2s}
+.bi img{height:46px;width:auto}
+.menu{display:flex;gap:40px;align-self:stretch}
+.menu a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-size:14.5px;letter-spacing:.04em;color:var(--ink-2);transition:color .2s}
 /* 메뉴 사이 얇은 세로 구분선 */
-.menu a+a::before{content:"";position:absolute;left:-15px;top:50%;width:1px;height:16px;background:var(--line);transform:translateY(-50%)}
+.menu a+a::before{content:"";position:absolute;left:-20px;top:50%;width:1px;height:20px;background:var(--line);transform:translateY(-50%)}
 /* 지금 보고 있는 메뉴: GNB 아랫선에 굵은 강조선 */
 .menu a::after{content:"";position:absolute;left:-4px;right:-4px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--mustard);transform:scaleX(0);transition:transform .3s var(--ease)}
 .menu a.on::after{transform:scaleX(1)}
@@ -102,7 +102,7 @@ body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;op
 /* 굵어져도 메뉴 폭이 흔들리지 않게 굵은 글자 폭을 미리 확보 */
 .menu b{display:inline-flex;flex-direction:column;align-items:center}
 .menu b::after{content:attr(data-t);font-weight:700;height:0;visibility:hidden;overflow:hidden;pointer-events:none}
-.menu a small{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-3);margin-top:2px}
+.menu a small{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-3);margin-top:3px}
 .menu a:hover,.menu a.on{color:var(--ink)}
 .menu b{font-weight:400}
 
@@ -335,14 +335,17 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 .m-info dt{font-size:13px;line-height:24px;color:var(--ink-3)}
 .m-info dd{font-size:13.5px;line-height:24px}
 .m-info dd.none{color:var(--ink-3)}
+/* 역량은 항목이 많아 한 줄을 넘으면 줄바꿈 (단어 중간에서는 안 끊음) */
+.m-info dd.skills{white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all}
 /* 사용 도구: 로고 + 이름 칩 */
 .m-info dd.tool-logos{white-space:normal}
 .tool-logo{display:inline-block;width:auto;height:20px;max-width:22px;object-fit:contain;vertical-align:middle;margin-right:14px;position:relative;top:-1px}   /* 로고만 나란히, 항목명 글줄 가운데에 */
 /* 수상: 연한 머스터드(예전 형광펜 색) 배경 + 테두리의 둥근 배지 */
 .m-info dd.award{color:var(--ink)}
 .m-info dd.award mark{display:inline-block;line-height:20px;padding:2px 11px;border-radius:6px;background:rgba(221,178,74,.28);border:1px solid rgba(221,178,74,.75);color:var(--ink);font-weight:700}
-/* 수상 배지 앞 메달 아이콘 */
-.m-info dd.award .award-ico{display:inline-block;height:18px;width:auto;vertical-align:-4px;margin-right:6px}
+/* 수상 배지 바깥 왼쪽 트로피 아이콘 (배지와 세로 가운데 맞춤) */
+.m-info dd.award .award-ico{display:inline-block;height:22px;width:auto;vertical-align:middle;margin-right:8px;position:relative;top:-1px}
+.m-info dd.award mark{vertical-align:middle}
 .m-block{margin-top:60px;padding-top:44px;border-top:1px solid var(--line)}
 .m-why-h{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
 .m-why-h h3{font-size:28px;font-weight:700;letter-spacing:-.03em}
@@ -382,7 +385,7 @@ footer p{font-size:13px;font-weight:300;color:var(--ink-2);line-height:1.8;text-
 
 @media (max-width:1000px){
   .wrap{width:calc(100% - 48px)}
-  .menu small{display:none}.menu{gap:16px}
+  .menu small{display:none}.menu{gap:20px}.menu a+a::before{left:-10px}
   .sec-head{flex-direction:column;align-items:flex-start}
   .hero-contact{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:18px 32px;margin-top:44px}
   .items{grid-template-columns:1fr 1fr}
@@ -662,7 +665,7 @@ const P = {
     award:"캡스톤디자인 학과 우수작 선정", kind:"기획서 · 일상 회복 및 사회참여 지원 서비스",
     one:"혼자 시작할 수 있는 작은 행동 미션을 통해 일상 회복에서 사회참여까지 단계적으로 연결하는 앱 서비스입니다.",
     people:"6명 — 배민서·백귀리·이나경·이연주·이준석·전예린", role:"팀장, 서비스 전체 기획, 발표",
-    skills:"사용자 리서치 · 문제 정의 · 단계별 서비스 설계 · 참여 동기 설계 · 정보구조 설계 · 화면설계 · UI 디자인",
+    skills:"사용자 리서치 · 문제 정의 · 핵심 컨셉 도출 · 프로젝트 방향성 검토 · 단계별 서비스 설계 · 참여 동기 설계 · 정보구조 설계 · 화면설계 · 전시 기획",
     intro:"오름은 일상과 외부 활동을 다시 시작하기 어려운 고립·은둔 쉬었음 청년을 위한 단계형 회복 지원 앱 서비스입니다. 사용자의 상태에 맞는 작은 행동을 하루 하나씩 제안하고, 수행 인증과 기록·보상을 통해 반복 참여를 돕도록 설계했습니다. 일상 회복에서 외출과 교류로 행동 범위를 넓히고, 준비된 단계에서 기존 청년 지원 프로그램으로 연결하는 경험을 제안했습니다.",
     why:"프로젝트 리서치에서는 상담이나 대면 참여 자체를 부담스러워하는 청년에게 기존 지원의 시작 단계가 장벽이 될 수 있다는 점에 주목했습니다. 현재 상태를 바꾸고 싶어도 무엇부터 해야 할지 모르거나, 외출을 계속 미루는 사용자에게는 혼자 시도할 수 있는 작은 행동이 필요했습니다. 이에 현재 가능한 행동부터 시작해 사회참여로 이어지는 중간 단계를 기획했습니다.",
     process:["고립·은둔 쉬었음 청년 관련 조사와 인터뷰 자료, 기존 지원 프로그램을 분석해 일상 리듬의 약화와 초기 참여 장벽을 정리했습니다. 이후 사용자를 ‘일상 붕괴형’과 ‘외출 장벽형’으로 구분하고, 각 유형의 시작 수준과 지속 참여에 필요한 조건을 페르소나로 구체화했습니다.",
@@ -1090,7 +1093,7 @@ const TOOL_LOGO = {Figma:"figma.png", ChatGPT:"chatgpt.png", Notion:"notion.svg"
 const toolChips=list=>(list||[]).filter(n=>TOOL_LOGO[n]).map(n=>`<img class="tool-logo" src="img/tools/${TOOL_LOGO[n]}" alt="${n}" title="${n}">`).join("");
 function infoRow(k,v,cls=""){const e=!v;
   // 수상은 형광펜처럼 강조, 수상 정보가 없으면 '-'
-  const val = e ? (k==="수상" ? "-" : "추후 업데이트") : (cls==="award" ? `<mark><img class="award-ico" src="img/new/award.png" alt="">${v}</mark>` : v);
+  const val = e ? (k==="수상" ? "-" : "추후 업데이트") : (cls==="award" ? `<img class="award-ico" src="img/new/trophy.png" alt=""><mark>${v}</mark>` : v);
   return `<dt>${k}</dt><dd class="${e?'none':cls}">${val}</dd>`;}
 function linkBtn(label,url,ink){return `<a class="btn" href="${url?encodeURI(url):'#'}" ${url?'target="_blank" rel="noopener"':'data-nofile'}>${label}</a>`;}
 function buttons(p){const deck=(p.deck?linkBtn("발표자료 보기",p.deck):"")+(p.site?linkBtn("웹사이트 보기",p.site):"");
@@ -1125,7 +1128,7 @@ function renderModal(id){
       <div class="m-cover">${p.cover?`<img src="${p.cover}" alt="">`:`<span>${p.short}</span>`}</div>
       <div class="m-intro"><h5>프로젝트 소개</h5><p>${p.intro}</p>${buttons(p)}</div>
       <div class="m-row2"><h3 class="m-title" id="mTitle">${PLAIN(p.title)}</h3>
-        <dl class="m-info">${p.award?infoRow("수상",p.award,"award"):""}${infoRow("기간",p.period)}${infoRow("구분",p.type)}${infoRow("역량",p.skills)}${infoRow("사용 도구",toolChips(p.tools),"tool-logos")}${infoRow("진행 인원",(p.people||"").split("—")[0].trim())}${infoRow("담당 역할",p.role)}${infoRow("한 줄 소개",p.one)}</dl></div>
+        <dl class="m-info">${p.award?infoRow("수상",p.award,"award"):""}${infoRow("기간",p.period)}${infoRow("구분",p.type)}${infoRow("역량",p.skills,"skills")}${infoRow("사용 도구",toolChips(p.tools),"tool-logos")}${infoRow("진행 인원",(p.people||"").split("—")[0].trim())}${infoRow("담당 역할",p.role)}${infoRow("한 줄 소개",p.one)}</dl></div>
     </div>
     ${body}
     <div style="margin-top:40px">${buttons(p)}</div>
