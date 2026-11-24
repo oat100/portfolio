@@ -1177,7 +1177,8 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
   const COOL=350;    // 도착 후 이만큼 지나면, 마우스 휠을 계속 굴리는 중이어도 다음 입력으로 받음
   const NOTCH=50;    // 한 번에 이만큼 이상 굴러오면 마우스 휠 '딸깍' (트랙패드는 이보다 잘게 들어옴)
   // gestureUsed: 지금 이어지는 손짓으로 이미 한 번 이동했으면 true → 손을 떼거나(멈춤) 새로 쓸기 전까지 추가 이동 없음
-  let anim=0,idle=0,userScroll=false,dragging=false,wheelTotal=0,lastWheel=0,wheelDir=0,queued=0,animT0=0,animDur=1,arrivedAt=0,gestureUsed=false;
+  let anim=0,idle=0,userScroll=false,dragging=false,wheelTotal=0,lastWheel=0,wheelDir=0,queued=0,animT0=0,animDur=1,arrivedAt=0,gestureUsed=false,revSum=0;
+  const REV=30;    // 반대 방향으로 이만큼 쌓여야 방향 전환으로 인정
   const hist=[];   // 최근 휠 세기 기록 [시각, 세기] — 트랙패드 관성(점점 약해짐)과 새 손짓(다시 세짐)을 구분
   const active=()=>view==="main"&&!modal.classList.contains("open")&&!reduced.matches;
   const sections=()=>$$("#main-view > section");
@@ -1216,8 +1217,15 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
     // 관성(약해지는 중) 도중 손가락으로 확실하게 새로 쓸어 올림 — 방금 전 가장 약했던 값보다 2.5배 넘게 세짐
     // (서서히 약해지는 관성, 손가락을 대고만 있을 때의 미세한 흔들림은 제외)
     const rising=prev.length>=3&&d>low*2.5&&d>20;
+    // 반대 방향 신호는 어느 정도 쌓여야(30) 진짜로 방향을 바꾼 것으로 봄
+    // — 손가락을 떼거나 대고 있을 때 살짝 거꾸로 튀는 신호 때문에 내려갔다가 다시 올라가지 않게
+    if(wheelDir&&dir!==wheelDir){
+      revSum=(gap<PAUSE?revSum:0)+d;lastWheel=now;
+      if(revSum<REV){if(targetFor(dir)!=null||anim)e.preventDefault();return;}
+    }else revSum=0;
     hist.push([now,d]);lastWheel=now;
     // 이미 이동한 손짓 뒤에는 더 길게(0.28초) 쉬어야 새 입력 — 화면이 버벅여 관성 신호가 늦게 도착해도 한 번 더 넘어가지 않게
+    const reversed=!!wheelDir&&dir!==wheelDir;
     const newGesture=gap>=(gestureUsed?280:PAUSE)||dir!==wheelDir||rising;
     wheelDir=dir;
     if(anim){
@@ -1227,7 +1235,7 @@ if(location.hash==="#bap")go("bap","all");else updateGnb();
       if(newGesture&&(now-animT0)/animDur>.4){queued=dir;gestureUsed=true;wheelTotal=0;}
       return;
     }
-    if(newGesture){wheelTotal=0;gestureUsed=false;}
+    if(newGesture){wheelTotal=reversed?revSum-d:0;gestureUsed=false;}
     const target=targetFor(dir);if(target==null)return;
     e.preventDefault();
     if(gestureUsed){
