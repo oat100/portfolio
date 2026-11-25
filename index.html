@@ -672,8 +672,8 @@ const P = {
     others:["nop","oreum","hana"], cats:["nurungji","team","fresh"]},
 
   oreum:{type:"기획서", short:"OREUM", color:["#E9E4F1","#5F5480"],
-    card:"쉬었음청년 대상 일상회복 사회복귀 브릿지 앱 서비스 “오름 OREUM” 기획서",
-    title:"고립·은둔 쉬었음 청년의 일상 회복과 사회참여를 돕는 앱 서비스 ‘오름 oreum’ 기획서",
+    card:"고립/은둔형 쉬었음 청년을 위한 단계별 일상 회복 앱 서비스 ‘오름 oreum’ 기획서",
+    title:"고립/은둔형 쉬었음 청년을 위한 단계별 일상 회복 앱 서비스 ‘오름 oreum’ 기획서",
     tags:["신규 기획","팀장","단계별 서비스 설계"], period:"2026.09 ~ 현재",
     award:"캡스톤디자인 학과 우수작 선정", kind:"기획서 · 일상 회복 및 사회참여 지원 서비스",
     one:"혼자 시작할 수 있는 작은 행동 미션을 통해 일상 회복에서 사회참여까지 단계적으로 연결하는 앱 서비스입니다.",
@@ -790,8 +790,6 @@ SB.forEach(([id,base,kind,role,others])=>{
     tags:[...b.tags.filter(t=>t!=="입선").slice(0,2),"화면설계"]};
 });
 P.sb_nop.wip=true;   // 놉 스토리보드: 제작 중 (미리보기 칸에 '제작중')
-// 오름은 앱 화면설계서라 이름을 '모바일 스토리보드'로
-["title","card"].forEach(k=>{P.sb_oreum[k]=P.sb_oreum[k].replace(/스토리보드$/,"모바일 스토리보드");});
 /* 스토리보드 미리보기: 화면설계서 PDF에서 내용이 많은 쪽 4장씩 (img/shots/sb-*) */
 const SB_SHOTS={
   sb_twosome:["sb-twosome-04","sb-twosome-10","sb-twosome-14","sb-twosome-21"],
